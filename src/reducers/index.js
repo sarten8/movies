@@ -1,10 +1,6 @@
 import { combineReducers } from 'redux'
-import platforms from './platforms'
-import projectDetails from './projectDetails'
-import projects from './projects'
+import movies from './movies'
 
 export default combineReducers({
-  platforms,
-  projectDetails,
-  projects,
+  movies,
 })
