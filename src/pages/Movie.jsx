@@ -182,14 +182,14 @@ const Movie = ({ fetchMovie, history }) => {
 
   return (
     <ModalContainer>
-      {loading ? <Loading /> : ''}
-      {error ? `Error: ${error}` : ''}
-      {data ? (
+      {loading ? (
+        <Loading />
+      ) : error ? (
+        `Error: ${error}`
+      ) : data ? (
         <Fragment>
           <Modal>
             <Close
-              //src={closeImage}
-              //alt=""
               onClick={e => {
                 e.preventDefault()
                 history.goBack()

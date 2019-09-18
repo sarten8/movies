@@ -112,23 +112,27 @@ const Movies = ({ fetchMovies, history }) => {
   return (
     <MoviesContainer>
       <MoviesContent>
-        {loading ? <Loading /> : ''}
-        {error ? `Error: ${error}` : ''}
-        {data
-          ? data.results.map((movie, index) => (
-              <Link key={index} to={`/movies/${movie.id}`}>
-                <Card key={`mc${index}`}>
-                  <Contratapa key={`mt${index}`}>
-                    <Title>{movie.title}</Title>
-                  </Contratapa>
-                  <ImageBackground
-                    key={`mi${index}`}
-                    src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                  />
-                </Card>
-              </Link>
-            ))
-          : ''}
+        {loading ? (
+          <Loading />
+        ) : error ? (
+          `Error: ${error}`
+        ) : data ? (
+          data.results.map((movie, index) => (
+            <Link key={index} to={`/movies/${movie.id}`}>
+              <Card key={`mc${index}`}>
+                <Contratapa key={`mt${index}`}>
+                  <Title>{movie.title}</Title>
+                </Contratapa>
+                <ImageBackground
+                  key={`mi${index}`}
+                  src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                />
+              </Card>
+            </Link>
+          ))
+        ) : (
+          ''
+        )}
       </MoviesContent>
       {data ? (
         <Pagination

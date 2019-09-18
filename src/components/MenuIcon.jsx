@@ -27,7 +27,7 @@ const Span1active = styled.span`
   width: 30px;
   border: 1px solid #ddd;
   transform: rotate(45deg);
-  transition: 0.3s;
+  transition: 0.8s;
 `
 
 const Span2active = styled.span`
@@ -37,7 +37,7 @@ const Span2active = styled.span`
   width: 30px;
   border: 1px solid #ddd;
   transform: rotate(-45deg);
-  transition: 0.3s;
+  transition: 0.8s;
 `
 
 const Icon = styled.div`
@@ -45,7 +45,7 @@ const Icon = styled.div`
   display: block;
   width: 30px;
   height: 30px;
-  transition: all .5s;
+  transition: all .8s;
   cursor: pointer;
   :hover ${Span1} {
     width: 30px;
@@ -58,7 +58,7 @@ const Icon = styled.div`
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    transform: rotateZ(-90deg);
+    transform: rotateZ(-135deg);
     transition: all .8s;
   }
   :hover ${Span2active} {
@@ -66,7 +66,7 @@ const Icon = styled.div`
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    transform: rotateZ(1deg);
+    transform: rotateZ(135deg);
     transition: all .8s;
   }
 `
