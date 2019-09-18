@@ -7,13 +7,17 @@ import styled from 'styled-components'
 import Pagination from '../components/Pagination'
 
 const Contratapa = styled.div`
-  display: none;
-  position: absolute;
-  padding: 10px;
-  top: 0;
-  left: 0;
+  margin: 0;
+  padding: 0;
   height: 100%;
   width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   border-radius: 5px;
   background-image: linear-gradient(
     to right top,
@@ -28,17 +32,6 @@ const Contratapa = styled.div`
   z-index: 9998;
   transition: all 0.5s;
   transition: background 0.5s;
-  & > span {
-    display: block;
-    padding: 10px;
-    width: 100%;
-    height: auto;
-    color: white;
-    font-family: 'Advent Pro', sans-serif;
-    font-size: 28px;
-    font-weight: 900;
-    border-radius: 15px;
-  }
 `
 
 const ImageBackground = styled.img`
@@ -52,7 +45,6 @@ const ImageBackground = styled.img`
 
 const MoviesContainer = styled.div`
   margin: 0;
-  margin-top: 60px;
   width: 99%;
   max-width: 99%;
   height: auto;
@@ -63,10 +55,17 @@ const MoviesContainer = styled.div`
 `
 
 const Title = styled.h1`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   margin: 0;
+  padding: 0;
+  width: 180px;
   font-family: 'Oswald', sans-serif;
   font-weight: 700;
-  font-size: 36px;
+  font-size: 34px;
   letter-spacing: -2px;
   color: white;
 `
@@ -75,7 +74,6 @@ const MoviesContent = styled.div`
   margin: 0;
   margin-top: 20px;
   padding: 20px;
-  width: 100%;
   max-width: 100%;
   height: auto;
   display: flex;
@@ -84,7 +82,8 @@ const MoviesContent = styled.div`
 `
 
 const Card = styled.div`
-  margin: 5px;
+  margin: 25px;
+  padding: 0;
   height: 300px;
   width: 200px;
   border-radius: 5px;
@@ -94,9 +93,6 @@ const Card = styled.div`
   position: relative;
   &:hover ${Contratapa} {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
     transition: all 0.5s;
   }
   &:hover ${ImageBackground} {
@@ -116,14 +112,14 @@ const Movies = ({ fetchMovies, history }) => {
   return (
     <MoviesContainer>
       <MoviesContent>
-        { loading ? <Loading /> : '' }
-        { error ? `Error: ${error}` : '' }
-        { data
+        {loading ? <Loading /> : ''}
+        {error ? `Error: ${error}` : ''}
+        {data
           ? data.results.map((movie, index) => (
               <Link key={index} to={`/movies/${movie.id}`}>
                 <Card key={`mc${index}`}>
                   <Contratapa key={`mt${index}`}>
-                    <span>{movie.title}</span>
+                    <Title>{movie.title}</Title>
                   </Contratapa>
                   <ImageBackground
                     key={`mi${index}`}
@@ -132,9 +128,17 @@ const Movies = ({ fetchMovies, history }) => {
                 </Card>
               </Link>
             ))
-          : '' }
+          : ''}
       </MoviesContent>
-      { data ? <Pagination totalPages={data.total_pages} currentPage={data.page} history={history} /> : '' }
+      {data ? (
+        <Pagination
+          totalPages={data.total_pages}
+          currentPage={data.page}
+          history={history}
+        />
+      ) : (
+        ''
+      )}
     </MoviesContainer>
   )
 }
@@ -148,12 +152,13 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch, ownProps) => {
   const search = ownProps.location.search
   const params = new URLSearchParams(search)
-  let page = params.get('page');
+  let page = params.get('page')
   page = parseInt(page)
   page = !isNaN(page) ? page : 1
   return {
-  fetchMovies: () => dispatch(fetchMoviesActionCreator(page)),
-}}
+    fetchMovies: () => dispatch(fetchMoviesActionCreator(page)),
+  }
+}
 
 export default connect(
   mapStateToProps,

@@ -2,7 +2,7 @@ import axios from 'axios'
 import { fetchMoviesRequest, fetchMoviesFailure, fetchMoviesSuccess } from '.'
 
 const fetchMovies = page => async dispatch => {
-  page = (page < 1 || page > 500) ? 1 : page
+  page = (page < 1 || page > 1000) ? 1 : page
   try {
     dispatch(fetchMoviesRequest())
     const options = {
@@ -14,10 +14,10 @@ const fetchMovies = page => async dispatch => {
       params: {
         page,
       },
-      //url: 'https://api.themoviedb.org/3/trending/movie/day',
-      url: 'https://api.themoviedb.org/3/movie/popular',
+      url: 'https://api.themoviedb.org/3/trending/movie/week',
     }
     const response = await axios(options)
+    console.log(response)
     dispatch(fetchMoviesSuccess(response.data))
   } catch (err) {
     dispatch(fetchMoviesFailure(err.toString()))

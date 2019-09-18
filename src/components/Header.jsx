@@ -1,62 +1,51 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import MenuIcon from './MenuIcon'
+import Menu from './Menu'
 import styled from 'styled-components'
+import LogoImg from '../utils/images/logo.png'
 
-const Header = styled.ul`
-  margin: 0;
+const Header = styled.div`
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  left: 0;
   padding: 20px;
-  width: 90%;
-  height: 40px;
+  max-width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, 0);
+  justify-content: space-between;
+  align-items: center;
   z-index: 9999;
 `
 
-const LinkButton = styled.li`
-  position: relative;
-  cursor: pointer;
-  margin: 5px;
-  list-style-type: none;
-  font-family: 'Oswald', sans-serif;
-  font-weight: 100;
-  font-size: 18px;
-  transition: 0.5s;
-  & > * {
-    text-decoration: none;
-    color: white;
-  }
-  ::before {
-    content: '';
-    width: 0;
-    height: 0;
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    transition: all 0.5s;
-    background: #c31432;
-    background: -webkit-linear-gradient(to left, #240b36, #c31432);
-    background: linear-gradient(to left, #240b36, #c31432);
-  }
-  :hover::before {
-    width: 100%;
-    height: 2px;
-    transition: width 0.5s ease-in-out;
+const Logo = styled.img`
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  transition: all 10s;
+  :hover {
+    opacity: 0.7;
+    transform: rotateZ(3600deg);
+    transition: all 10s;
   }
 `
 
-export default () => (
-  <Header>
-    <LinkButton>
-      <Link to="/home">Home</Link>
-    </LinkButton>
-    <LinkButton>
-      <Link to="/countries">About</Link>
-    </LinkButton>
-  </Header>
-)
+export default () => {
+  const [active, setActive] = useState(false)
+
+  const updateActive = () => {
+    if (active) setActive(false)
+    else setActive(true)
+  }
+
+  return (
+    <Header>
+      <Link to="/">
+        <Logo src={LogoImg} alt="" onClick={() => setActive(false)} />
+      </Link>
+      <MenuIcon menuStatus={active} menuActive={updateActive} />
+      <Menu menuStatus={active} menuActive={updateActive} />
+    </Header>
+  )
+}

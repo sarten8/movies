@@ -3,13 +3,12 @@ import { connect, useSelector } from 'react-redux'
 import { fetchMovie as fetchMovieActionCreator } from '../actions/movie/fetchMovie'
 import styled from 'styled-components'
 import Loading from '../components/Loading'
-import closeImage from '../utils/images/close.png'
 import imdbImage from '../utils/images/IMDb.png'
 
 const ModalContainer = styled.div`
   margin: 0;
-  margin-top: 60px;
-  width: 99%;
+  margin-top: 30px;
+  min-width: 99%;
   max-width: 99%;
   height: auto;
   display: flex;
@@ -37,7 +36,7 @@ const Modal = styled.div`
   padding: 20px;
   width: 90%;
   border-radius: 10px;
-  background: #050505d2;
+  background-color: #050505d2;
   display: flex;
   flex-direction: row;
   overflow: hidden;
@@ -57,17 +56,52 @@ const Modal = styled.div`
   }
 `
 
-const Close = styled.img`
+const Close = styled.div`
   position: absolute;
   right: 30px;
   top: 30px;
   width: 32px;
   height: 32px;
-  transition: all 0.5s;
+  transition: all 0.3s;
   cursor: pointer;
-  z-index: 9999;
+  z-index: 10;
   :hover {
-    transform: scale(1.05);
+    transform: rotateZ(90deg);
+    transition: all 0.6s;
+  }
+  ::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: 0;
+    width: 25px;
+    border: 1px solid;
+    border-image-source: linear-gradient(
+      to bottom,
+      #ffaf7b,
+      rgb(204, 215, 109),
+      rgb(97, 113, 28)
+    );
+    border-image-slice: 1;
+    transform: rotate(45deg);
+    transition: 0.3s;
+  }
+  ::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: 0;
+    width: 25px;
+    border: 1px solid;
+    border-image-source: linear-gradient(
+      to bottom,
+      #ffaf7b,
+      rgb(204, 215, 109),
+      rgb(97, 113, 28)
+    );
+    border-image-slice: 1;
+    transform: rotate(-45deg);
+    transition: 0.3s;
   }
 `
 
@@ -141,6 +175,7 @@ const Year = styled.span`
 const Movie = ({ fetchMovie, history }) => {
   const { movie } = useSelector(state => state)
   const { loading, error, data } = movie
+
   useEffect(() => {
     fetchMovie()
   }, [])
@@ -153,8 +188,8 @@ const Movie = ({ fetchMovie, history }) => {
         <Fragment>
           <Modal>
             <Close
-              src={closeImage}
-              alt=""
+              //src={closeImage}
+              //alt=""
               onClick={e => {
                 e.preventDefault()
                 history.goBack()

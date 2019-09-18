@@ -6,16 +6,15 @@ import { Pagination } from '@zendeskgarden/react-pagination'
 
 const Container = styled.div``
 
-export default ({ totalPages, currentPage, changePage, history }) => {
+export default ({ totalPages, currentPage, history }) => {
   return (
     <Container>
       <ThemeProvider>
         <Pagination
           totalPages={totalPages}
           currentPage={currentPage}
-          pagePadding={0}
+          pagePadding={1}
           onChange={page => {
-            window.scroll(0,0)
             history.push({
               pathname: '/movies',
               search: `?page=${page}`,
