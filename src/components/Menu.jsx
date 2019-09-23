@@ -102,12 +102,12 @@ export default ({ menuStatus, menuActive }) => {
             TRENDING WEEK
           </LinkSpan>
         </Link>
-        <Link to="/" style={{ textDecoration: 'none' }}>
+        <Link to="/search" style={{ textDecoration: 'none' }}>
           <LinkSpan
             style={{ animationDuration: '.59s' }}
             onClick={_handleClick}
           >
-            POPULAR
+            SEARCH
           </LinkSpan>
         </Link>
       </div>
