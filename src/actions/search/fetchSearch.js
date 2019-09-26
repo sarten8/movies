@@ -1,26 +1,22 @@
 import axios from 'axios'
-import { fetchMoviesRequest, fetchMoviesFailure, fetchMoviesSuccess } from '.'
+import { fetchSearchRequest, fetchSearchFailure, fetchSearchSuccess } from '.'
 
-const fetchMovies = page => async dispatch => {
-  page = (page < 1 || page > 1000) ? 1 : page
+const fetchSearch = (movie, page) => async dispatch => {
   try {
-    dispatch(fetchMoviesRequest())
+    dispatch(fetchSearchRequest())
     const options = {
       method: 'GET',
       headers: {
         'content-type': 'application/json;charset=utf-8',
         Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MThlNmY2ZjZjYjNhMGVkNzFhZmQ5OGM0NDc2NzgyNyIsInN1YiI6IjViYjc2NTIzYzNhMzY4MTUwYzAyYjNmMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.1i9oGthZ1qDREimJC8_bfJRQH_aqtliQw8N28PtPdQ8`,
       },
-      params: {
-        page,
-      },
-      url: 'https://api.themoviedb.org/3/trending/movie/week',
+      url: `https://api.themoviedb.org/3/search/movie?query=${movie}&page=${page}`,
     }
     const response = await axios(options)
-    dispatch(fetchMoviesSuccess(response.data))
+    dispatch(fetchSearchSuccess(response.data))
   } catch (err) {
-    dispatch(fetchMoviesFailure(err.toString()))
+    dispatch(fetchSearchFailure(err.toString()))
   }
 }
 
-export { fetchMovies }
+export { fetchSearch }

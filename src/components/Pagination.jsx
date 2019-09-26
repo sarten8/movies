@@ -16,7 +16,7 @@ export default ({ totalPages, currentPage, history }) => {
           pagePadding={1}
           onChange={page => {
             history.push({
-              pathname: '/movies',
+              pathname: history.location.pathname,
               search: `?page=${page}`,
             })}
         }

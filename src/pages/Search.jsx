@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import Loading from '../components/Loading'
+import React, { Fragment, useState, useEffect } from 'react'
+import qs from 'qs'
 import { connect, useSelector } from 'react-redux'
-import { fetchMovies as fetchMoviesActionCreator } from '../actions/movies/fetchMovies'
+import { fetchSearch as fetchSearchActionCreator } from '../actions/search/fetchSearch'
 import styled from 'styled-components'
 import SearchButtom from '../components/SearchButtom'
+import Loading from '../components/Loading'
+import SearchResult from './SearchResult'
+import Pagination from '../components/Pagination'
 
 const SearchContainer = styled.div`
+  margin: 40px;
   padding: 20px;
-  max-width: 100%;
-  height: 50vh;
+  /* max-width: 100%;
+  height: 50vh; */
   background: #050505;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 `
@@ -40,7 +43,7 @@ const SearchTextContainer = styled.div`
   align-items: center;
   background: #050505;
   border-radius: 50px;
-  transition: all .5s;
+  transition: all 0.5s;
   ::before {
     content: '';
     position: absolute;
@@ -49,10 +52,11 @@ const SearchTextContainer = styled.div`
     right: -1px;
     bottom: -1px;
     background: linear-gradient(45deg, red, orange, purple);
-    filter: ${props => (props.children[0].props.blur ? 'blur(10px)' : 'blur(0)')};
+    filter: ${props =>
+      props.children[0].props.blur ? 'blur(10px)' : 'blur(0)'};
     border-radius: 50px;
     z-index: -1;
-    transition: all .5s;
+    transition: all 0.5s;
   }
 `
 
@@ -65,8 +69,9 @@ const SearchText = styled.input`
   font-weight: 100;
   border: 0;
   transition: all 0.5s;
+  outline: none;
   ::placeholder {
-    color: white;
+    color: #ffffffaa;
     font-size: 20px;
     font-style: italic;
     letter-spacing: 2px;
@@ -74,13 +79,28 @@ const SearchText = styled.input`
   }
 `
 
-export default () => {
+const Search = ({ fetchSearch, history }) => {
   const [searchInput, setSearchInput] = useState('')
   const [blur, setBlur] = useState(false)
+  const { movies } = useSelector(state => state)
+  const { loading, error, data } = movies
+
+  useEffect(() => {
+    fetchSearch()
+  }, [history.location.search])
 
   return (
     <SearchContainer>
-      <SearchForm onSubmit={() => alert(searchInput)}>
+      <SearchForm
+        onSubmit={e => {
+          e.preventDefault()
+          history.push({
+            pathname: '/search',
+            search: `?movie=${searchInput}&page=1`,
+          })
+          setSearchInput('')
+        }}
+      >
         <SearchTextContainer>
           <SearchText
             type="text"
@@ -94,6 +114,48 @@ export default () => {
           <SearchButtom />
         </SearchTextContainer>
       </SearchForm>
+      <h1 style={{ color: '#FFF' }}>Results</h1>
+      {loading ? (
+        <Loading />
+      ) : error ? (
+        `Error: ${error}`
+      ) : data ? (
+        <Fragment>
+          <SearchResult movies={data.results} />
+          <Pagination
+            totalPages={data.total_pages}
+            currentPage={data.page}
+            history={history}
+          />
+        </Fragment>
+      ) : (
+        ''
+      )}
     </SearchContainer>
   )
 }
+
+const mapStateToProps = state => ({
+  loading: state.search.loading,
+  error: state.search.error,
+  movies: state.search.movies,
+})
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  let { movie, page } = qs.parse(ownProps.location.search, {
+    ignoreQueryPrefix: true,
+    parameterLimit: 2,
+  })
+  movie = movie ? movie : ''
+  page = page ? parseInt(page, 10) : 1
+  page = page ? page : 1
+  page = page > 0 && page < 1001 ? page : 1
+  return {
+    fetchSearch: () => dispatch(fetchSearchActionCreator(movie, page)),
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Search)
