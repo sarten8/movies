@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import SearchButtom from '../components/SearchButtom'
 import Loading from '../components/Loading'
 import SearchResult from './SearchResult'
-import Pagination from '../components/Pagination'
+import Pagination from '../components/PaginationSearch'
 
 const SearchContainer = styled.div`
   margin: 40px;
@@ -21,6 +21,7 @@ const SearchContainer = styled.div`
 `
 
 const SearchForm = styled.form`
+  margin-bottom: 40px;
   min-width: 100%;
   min-height: 100%;
   background: #050505;
@@ -79,11 +80,19 @@ const SearchText = styled.input`
   }
 `
 
-const Search = ({ fetchSearch, history }) => {
+const ResultTitle = styled.h1`
+  color: white;
+  align-items: flex-start;
+`
+
+const Search = ({ fetchSearch, history, loading, error, data }) => {
   const [searchInput, setSearchInput] = useState('')
   const [blur, setBlur] = useState(false)
-  const { movies } = useSelector(state => state)
-  const { loading, error, data } = movies
+
+  let { movie } = qs.parse(history.location.search, {
+    ignoreQueryPrefix: true,
+    parameterLimit: 2,
+  })
 
   useEffect(() => {
     fetchSearch()
@@ -114,22 +123,33 @@ const Search = ({ fetchSearch, history }) => {
           <SearchButtom />
         </SearchTextContainer>
       </SearchForm>
-      <h1 style={{ color: '#FFF' }}>Results</h1>
       {loading ? (
         <Loading />
       ) : error ? (
         `Error: ${error}`
       ) : data ? (
-        <Fragment>
-          <SearchResult movies={data.results} />
-          <Pagination
-            totalPages={data.total_pages}
-            currentPage={data.page}
-            history={history}
-          />
-        </Fragment>
+        data.results.length > 0 ? (
+          <Fragment>
+            <ResultTitle style={{ color: '#FFF' }}>Results</ResultTitle>
+            <Pagination
+              totalPages={data.total_pages}
+              currentPage={data.page}
+              history={history}
+              movie={movie}
+            />
+            <SearchResult movies={data.results} />
+            <Pagination
+              totalPages={data.total_pages}
+              currentPage={data.page}
+              history={history}
+              movie={movie}
+            />
+          </Fragment>
+        ) : (
+          <h3 style={{ marginTop: '50px', color: '#FFF' }}>Not found</h3>
+        )
       ) : (
-        ''
+        <h3 style={{ marginTop: '50px', color: '#FFF' }}>Not found</h3>
       )}
     </SearchContainer>
   )
@@ -138,7 +158,7 @@ const Search = ({ fetchSearch, history }) => {
 const mapStateToProps = state => ({
   loading: state.search.loading,
   error: state.search.error,
-  movies: state.search.movies,
+  data: state.search.data,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {

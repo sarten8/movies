@@ -1,6 +1,6 @@
-const fetchSearchSuccess = movies => ({
+const fetchSearchSuccess = data => ({
   type: 'FETCH_SEARCH_SUCCESS',
-  payload: movies,
+  payload: data,
 })
 
 export default fetchSearchSuccess

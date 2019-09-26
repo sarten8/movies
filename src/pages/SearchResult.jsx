@@ -97,12 +97,11 @@ const Card = styled.div`
   }
 `
 
-const SearchResult = movies => {
-  console.log(movies)
+const SearchResult = ({ movies }) => {
   return (
   <MoviesContainer>
     <MoviesContent>
-      {movies.results.map((movie, index) => (
+      {movies.map((movie, index) => (
         <Link key={index} to={`/movies/${movie.id}`}>
           <Card key={`mc${index}`}>
             <Contratapa key={`mt${index}`}>
