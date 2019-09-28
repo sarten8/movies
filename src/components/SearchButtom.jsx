@@ -27,6 +27,7 @@ const SearchButtom = styled.button`
   text-decoration: none;
   border: 0;
   transition: all .5s;
+  outline: none;
   :hover > ${SearchImage} {
     transform: rotateZ(90deg);
     transition: all .5s;
