@@ -87,8 +87,8 @@ const SearchText = styled.input`
 const TotalResults = styled.span`
   font-family: 'Raleway', monospace, sans-serif;
   font-size: 15px;
-  font-weight: 100;
-  margin-left: 10px;
+  font-weight: 700;
+  margin-left: 25px;
 `
 
 const ResultTitle = styled.h1`
@@ -98,6 +98,7 @@ const ResultTitle = styled.h1`
 
 const Search = ({ fetchSearch, history, loading, error, data }) => {
   const [searchInput, setSearchInput] = useState('')
+  const [resultText, setResultText] = useState('')
   const [blur, setBlur] = useState(false)
 
   let { movie } = qs.parse(history.location.search, {
@@ -107,6 +108,11 @@ const Search = ({ fetchSearch, history, loading, error, data }) => {
 
   useEffect(() => {
     fetchSearch()
+    const { movie } = qs.parse(history.location.search, {
+      ignoreQueryPrefix: true,
+      parameterLimit: 2,
+    })
+    setResultText(movie)
   }, [history.location.search])
 
   return (
@@ -144,7 +150,8 @@ const Search = ({ fetchSearch, history, loading, error, data }) => {
             <ResultTitle>
               Results
               <TotalResults>
-              {' | '}{data.total_results} movie{data.total_results > 1 ? 's' : ''}
+                {resultText} {' | '}
+                {data.total_results} movie{data.total_results > 1 ? 's' : ''}
               </TotalResults>
             </ResultTitle>
             <Pagination
