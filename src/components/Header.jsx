@@ -12,6 +12,7 @@ const Header = styled.div`
   left: 0;
   padding: 20px;
   max-width: 100%;
+  background: #050505;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

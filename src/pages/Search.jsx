@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import qs from 'qs'
-import { connect, useSelector } from 'react-redux'
+import { connect } from 'react-redux'
 import { fetchSearch as fetchSearchActionCreator } from '../actions/search/fetchSearch'
 import styled from 'styled-components'
 import SearchButtom from '../components/SearchButtom'
@@ -9,10 +9,9 @@ import SearchResult from './SearchResult'
 import Pagination from '../components/PaginationSearch'
 
 const SearchContainer = styled.div`
+  position: relative;
   margin: 40px;
   padding: 20px;
-  /* max-width: 100%;
-  height: 50vh; */
   background: #050505;
   display: flex;
   flex-direction: column;
@@ -21,15 +20,19 @@ const SearchContainer = styled.div`
 `
 
 const SearchForm = styled.form`
+  position: sticky;
+  position: -webkit-sticky;
+  top: 80px;
   margin-bottom: 40px;
   min-width: 100%;
   min-height: 100%;
   background: #050505;
+  border-radius: 50px;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  z-index: 0;
+  z-index: 9999;
 `
 
 const SearchTextContainer = styled.div`
@@ -66,6 +69,7 @@ const SearchText = styled.input`
   height: 100%;
   background: transparent;
   color: white;
+  font-family: 'Raleway', monospace, sans-serif;
   font-size: 20px;
   font-weight: 100;
   border: 0;
@@ -73,11 +77,18 @@ const SearchText = styled.input`
   outline: none;
   ::placeholder {
     color: #ffffffaa;
-    font-size: 20px;
+    font-size: 18px;
     font-style: italic;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     transition: all 0.5s;
   }
+`
+
+const TotalResults = styled.span`
+  font-family: 'Raleway', monospace, sans-serif;
+  font-size: 15px;
+  font-weight: 100;
+  margin-left: 10px;
 `
 
 const ResultTitle = styled.h1`
@@ -115,7 +126,7 @@ const Search = ({ fetchSearch, history, loading, error, data }) => {
             type="text"
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
-            placeholder="Search movies..."
+            placeholder="Movies..."
             onFocus={() => setBlur(true)}
             onBlur={() => setBlur(false)}
             blur={blur}
@@ -130,7 +141,12 @@ const Search = ({ fetchSearch, history, loading, error, data }) => {
       ) : data ? (
         data.results.length > 0 ? (
           <Fragment>
-            <ResultTitle style={{ color: '#FFF' }}>Results</ResultTitle>
+            <ResultTitle>
+              Results
+              <TotalResults>
+              {' | '}{data.total_results} movie{data.total_results > 1 ? 's' : ''}
+              </TotalResults>
+            </ResultTitle>
             <Pagination
               totalPages={data.total_pages}
               currentPage={data.page}
