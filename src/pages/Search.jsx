@@ -92,6 +92,8 @@ const TotalResults = styled.span`
 `
 
 const ResultTitle = styled.h1`
+  display: flex;
+  flex-direction: column;
   color: white;
   align-items: flex-start;
 `
