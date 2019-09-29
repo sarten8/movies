@@ -22,7 +22,7 @@ const SearchContainer = styled.div`
 const SearchForm = styled.form`
   position: sticky;
   position: -webkit-sticky;
-  top: 80px;
+  top: 105px;
   margin-bottom: 40px;
   min-width: 100%;
   min-height: 100%;
@@ -32,7 +32,7 @@ const SearchForm = styled.form`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 9998;
 `
 
 const SearchTextContainer = styled.div`
