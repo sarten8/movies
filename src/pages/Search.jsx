@@ -26,10 +26,10 @@ const SearchForm = styled.form`
   margin-bottom: 40px;
   padding: 40px 0;
   min-width: 100%;
+  width: 100%;
   min-height: 100%;
   height: 110px;
   background: #050505;
-  border-radius: 50px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -59,7 +59,7 @@ const SearchTextContainer = styled.div`
     bottom: -1px;
     background: linear-gradient(45deg, red, orange, purple);
     filter: ${props =>
-      props.children[0].props.blur ? 'blur(25px)' : 'blur(0)'};
+      props.children[0].props.blur ? 'blur(30px)' : 'blur(0)'};
     border-radius: 50px;
     z-index: -1;
     transition: all 0.5s;
