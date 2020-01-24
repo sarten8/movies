@@ -4,6 +4,7 @@ import { fetchMovie as fetchMovieActionCreator } from '../actions/movie/fetchMov
 import styled from 'styled-components'
 import Loading from '../components/Loading'
 import imdbImage from '../utils/images/IMDb.png'
+import Cast from './Cast'
 
 const ModalContainer = styled.div`
   margin: 0;
@@ -208,6 +209,7 @@ const Movie = ({ fetchMovie, history }) => {
                 </h2>
                 <p>{data.overview}</p>
               </div>
+              <Cast movie={data.id} />
               <div>
                 <Imdb src={imdbImage} alt="" />
                 <Star>&#x2605; </Star>
@@ -234,7 +236,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   fetchMovie: () => dispatch(fetchMovieActionCreator(ownProps.match.params.id)),
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Movie)
+export default connect(mapStateToProps, mapDispatchToProps)(Movie)
