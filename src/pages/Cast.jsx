@@ -26,7 +26,7 @@ const Cast = ({ fetchCast }) => {
       ) : data ? (
         <Fragment>
           {
-            data.cast.slice(0, 10).map(c => <Person avatar={c.profile_path} />)
+            data.cast.slice(0, 10).map(c => <Person avatar={c.profile_path} name={c.name} />)
           }
         </Fragment>
       ) : (
