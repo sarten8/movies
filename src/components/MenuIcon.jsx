@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 const Span1 = styled.span`
   position: absolute;
-  top: 15px;
+  top: 12px;
   right: 0;
   width: 20px;
   border: 1px solid #ddd;
@@ -12,7 +12,7 @@ const Span1 = styled.span`
 
 const Span2 = styled.span`
   position: absolute;
-  top: 15px;
+  top: 12px;
   right: 0;
   width: 30px;
   border: 1px solid #ddd;
@@ -22,7 +22,7 @@ const Span2 = styled.span`
 
 const Span1active = styled.span`
   position: absolute;
-  top: 15px;
+  top: 12px;
   right: 0;
   width: 30px;
   border: 1px solid #ddd;
@@ -32,7 +32,7 @@ const Span1active = styled.span`
 
 const Span2active = styled.span`
   position: absolute;
-  top: 15px;
+  top: 12px;
   right: 0;
   width: 30px;
   border: 1px solid #ddd;
@@ -42,6 +42,7 @@ const Span2active = styled.span`
 
 const Icon = styled.div`
   position: relative;
+  z-index: 9999 !important;
   display: block;
   width: 30px;
   height: 30px;

@@ -10,8 +10,8 @@ import Pagination from '../components/PaginationSearch'
 
 const SearchContainer = styled.div`
   position: relative;
-  margin: 40px;
-  padding: 20px;
+  margin: 22px 0;
+  padding: 0 11px;
   background: #050505;
   display: flex;
   flex-direction: column;
@@ -22,27 +22,27 @@ const SearchContainer = styled.div`
 const SearchForm = styled.form`
   position: sticky;
   position: -webkit-sticky;
-  top: 100px;
-  margin-bottom: 40px;
-  padding: 40px 0;
-  min-width: 100%;
-  width: 100%;
-  min-height: 100%;
-  height: 110px;
+  top: 35px;
+  margin-bottom: 20px;
+  padding: 0;
+  width: calc(100% - 120px);
+  max-width: 570px;
   background: #050505;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  z-index: 9998;
+  border-radius: 50%;
+  z-index: 9996;
 `
 
 const SearchTextContainer = styled.div`
   position: relative;
   padding: 10px;
-  padding-left: 30px;
-  width: 75%;
-  height: 50px;
+  padding-left: 20px;
+  padding-right: 65px;
+  width: 100%;
+  height: 66px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -57,7 +57,8 @@ const SearchTextContainer = styled.div`
     left: -1px;
     right: -1px;
     bottom: -1px;
-    background: linear-gradient(45deg, red, orange, purple);
+    /* background: linear-gradient(45deg, red, orange, purple); */
+    background: linear-gradient(45deg, lightgray, gray, black);
     filter: ${props =>
       props.children[0].props.blur ? 'blur(30px)' : 'blur(0)'};
     border-radius: 50px;
@@ -86,6 +87,37 @@ const SearchText = styled.input`
   }
 `
 
+const SearchWrapperTitle = styled.div`
+  margin-top: 40px;
+  margin-bottom: 20px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+`
+
+const SearchTitle = styled.h1`
+  margin: 0;
+  margin-top: ${props => (props.bottom ? '-36px' : 0)};
+  margin-left: ${props => (props.bottom ? 0 : '4px')};
+  padding: 0;
+  display: block;
+  font-family: 'Raleway', monospace, sans-serif;
+  font-size: 84px;
+  font-weight: 900;
+  line-height: 1;
+  color: white;
+  /* background: -webkit-linear-gradient(7deg, blue, red, purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; */
+  @media (min-width: 360px) {
+    font-size: 92px;
+  }
+  @media (min-width: 720px) {
+    font-size: 180px;
+  }
+`
+
 const TotalResults = styled.span`
   font-family: 'Raleway', monospace, sans-serif;
   font-size: 15px;
@@ -94,10 +126,14 @@ const TotalResults = styled.span`
 `
 
 const ResultTitle = styled.h1`
+  margin: 0;
+  padding: 0;
+  font-size: 32px;
+  line-height: 1.5;
   display: flex;
   flex-direction: column;
-  color: white;
   align-items: flex-start;
+  color: white;
 `
 
 const Search = ({ fetchSearch, history, loading, error, data }) => {
@@ -134,9 +170,10 @@ const Search = ({ fetchSearch, history, loading, error, data }) => {
         <SearchTextContainer>
           <SearchText
             type="text"
+            autoFocus={true}
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
-            placeholder="Movies..."
+            placeholder="Movie..."
             onFocus={() => setBlur(true)}
             onBlur={() => setBlur(false)}
             blur={blur}
@@ -144,10 +181,14 @@ const Search = ({ fetchSearch, history, loading, error, data }) => {
           <SearchButtom />
         </SearchTextContainer>
       </SearchForm>
+      <SearchWrapperTitle>
+        <SearchTitle>All</SearchTitle>
+        <SearchTitle bottom={true}>movies</SearchTitle>
+      </SearchWrapperTitle>
       {loading ? (
         <Loading />
       ) : error ? (
-        `Error: ${error}`
+          null
       ) : data ? (
         data.results.length > 0 ? (
           <Fragment>

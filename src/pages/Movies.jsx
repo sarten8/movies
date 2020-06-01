@@ -6,6 +6,34 @@ import { fetchMovies as fetchMoviesActionCreator } from '../actions/movies/fetch
 import styled from 'styled-components'
 import Pagination from '../components/Pagination'
 
+
+const TrendingTitle = styled.h1`
+  margin: 0;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  padding: 0 10px;
+  padding-bottom: 35px;
+  display: block;
+  font-family: 'Raleway', monospace, sans-serif;
+  font-size: 36px;
+  font-weight: 900;
+  color: white;
+  text-align: center;
+  border-bottom: 1px dotted white;
+  border-bottom-width: 7px;
+  border-bottom-right-radius: 90%;
+  background: -webkit-linear-gradient(7deg, white, white, #202020);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  @media (min-width: 380px) {
+    font-size: 48px;
+  }
+  @media (min-width: 720px) {
+    font-size: 52px;
+  }
+`
+
+
 const Contratapa = styled.div`
   margin: 0;
   padding: 0;
@@ -29,7 +57,7 @@ const Contratapa = styled.div`
     #f4af60cc,
     #f9f871cc
   );
-  z-index: 9998;
+  z-index: 9997;
   transition: all 0.5s;
   transition: background 0.5s;
 `
@@ -111,6 +139,7 @@ const Movies = ({ fetchMovies, history }) => {
 
   return (
     <MoviesContainer>
+      <TrendingTitle>Trending week</TrendingTitle>
       <MoviesContent>
         {loading ? (
           <Loading />

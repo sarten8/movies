@@ -9,8 +9,7 @@ import Cast from './Cast'
 const ModalContainer = styled.div`
   margin: 0;
   margin-top: 30px;
-  min-width: 99%;
-  max-width: 99%;
+  width: 100%;
   height: auto;
   display: flex;
   justify-content: center;
@@ -19,7 +18,8 @@ const ModalContainer = styled.div`
 
 const Description = styled.div`
   margin: 10px;
-  padding: 10px;
+  padding: 0;
+  max-width: 540px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -34,8 +34,8 @@ const Description = styled.div`
 const Modal = styled.div`
   position: relative;
   margin: 0 auto;
-  padding: 20px;
-  width: 90%;
+  padding: 11px;
+  width: 100%;
   border-radius: 10px;
   background-color: #050505d2;
   display: flex;
@@ -60,7 +60,7 @@ const Modal = styled.div`
 const Close = styled.div`
   position: absolute;
   right: 30px;
-  top: 30px;
+  top: -10px;
   width: 32px;
   height: 32px;
   transition: all 0.3s;
@@ -108,10 +108,9 @@ const Close = styled.div`
 
 const Cover = styled.div`
   margin: 10px;
-  padding: 10px;
+  padding: 0;
   border-radius: 5px;
   width: auto;
-  min-width: 200px;
   height: auto;
   display: flex;
   flex-direction: column;
@@ -152,7 +151,6 @@ const Imdb = styled.img`
   margin-right: 10px;
   width: 50px;
   height: 24px;
-  box-sizing: border-box;
   border-radius: 5px;
 `
 

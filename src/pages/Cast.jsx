@@ -5,9 +5,12 @@ import Person from '../components/Person'
 import styled from 'styled-components'
 
 const Container = styled.div`
+  margin-bottom: 22px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
 `
 const Cast = ({ fetchCast }) => {
   const { cast } = useSelector(state => state)
@@ -26,7 +29,7 @@ const Cast = ({ fetchCast }) => {
       ) : data ? (
         <Fragment>
           {
-            data.cast.slice(0, 10).map(c => <Person avatar={c.profile_path} name={c.name} />)
+            data.cast.slice(0, 12).map(c => <Person avatar={c.profile_path} name={c.name} />)
           }
         </Fragment>
       ) : (
