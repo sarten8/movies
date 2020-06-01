@@ -1,5 +1,6 @@
 .hg
 .git
+.github
 .gitmodules
 .svn
 .cache
@@ -21,3 +22,4 @@ node_modules
 __pycache__/
 venv/
 CVS
+public/
