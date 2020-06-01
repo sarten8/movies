@@ -35,11 +35,11 @@ const Modal = styled.div`
   position: relative;
   margin: 0 auto;
   padding: 11px;
-  width: 100%;
   border-radius: 10px;
   background-color: #050505d2;
   display: flex;
   flex-direction: row;
+  justify-content: center;
   overflow: hidden;
   color: white;
   ${Description} div h2 {
