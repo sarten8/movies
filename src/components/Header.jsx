@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import MenuIcon from './MenuIcon'
 import Menu from './Menu'
@@ -10,19 +10,20 @@ const Header = styled.div`
   position: -webkit-sticky;
   top: 0;
   left: 0;
-  padding: 20px;
+  padding: 22px;
   max-width: 100%;
+  height: 56px;
   background: #050505;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  z-index: 9999;
+  z-index: 9995;
 `
 
 const Logo = styled.img`
-  width: 60px;
-  height: 60px;
+  width: 46px;
+  height: 46px;
   padding: 0;
   transition: all 10s;
   :hover {
@@ -41,12 +42,14 @@ export default () => {
   }
 
   return (
+    <Fragment>
     <Header>
       <Link to="/">
         <Logo src={LogoImg} alt="" onClick={() => setActive(false)} />
       </Link>
       <MenuIcon menuStatus={active} menuActive={updateActive} />
-      <Menu menuStatus={active} menuActive={updateActive} />
     </Header>
+    <Menu menuStatus={active} menuActive={updateActive} />
+    </Fragment>
   )
 }

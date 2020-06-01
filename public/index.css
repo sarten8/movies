@@ -23,6 +23,10 @@ body {
   background-color: #050505;
 }
 
+html, body, * {
+  box-sizing: border-box;
+}
+
 
 code {
   font-family: 'Raleway', monospace, sans-serif;

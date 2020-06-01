@@ -14,12 +14,12 @@ const Menu = styled.div`
   justify-content: flex-end;
   align-items: center;
   background: #050505e7;
-  z-index: -20;
+  z-index: 9998;
   > div {
     margin-top: 80px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
   }
 `
 
@@ -27,10 +27,11 @@ const LinkSpan = styled.span`
   padding: 10px;
   display: block;
   overflow: hidden;
-  font-family: 'Advent Pro', sans-serif;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 900;
   text-decoration: none;
   font-size: 28px;
-  letter-spacing: 1px;
+  letter-spacing: 4px;
   cursor: pointer;
   margin: 5px;
   position: relative;
@@ -94,20 +95,20 @@ export default ({ menuStatus, menuActive }) => {
             HOME
           </LinkSpan>
         </Link>
-        <Link to="/movies" style={{ textDecoration: 'none' }}>
-          <LinkSpan
-            style={{ animationDuration: '.53s' }}
-            onClick={_handleClick}
-          >
-            TRENDING WEEK
-          </LinkSpan>
-        </Link>
         <Link to="/search" style={{ textDecoration: 'none' }}>
           <LinkSpan
             style={{ animationDuration: '.59s' }}
             onClick={_handleClick}
           >
             SEARCH
+          </LinkSpan>
+        </Link>
+        <Link to="/movies" style={{ textDecoration: 'none' }}>
+          <LinkSpan
+            style={{ animationDuration: '.53s' }}
+            onClick={_handleClick}
+          >
+            TRENDING WEEK
           </LinkSpan>
         </Link>
       </div>

@@ -25,7 +25,7 @@ const Contratapa = styled.div`
     #f4af60cc,
     #f9f871cc
   );
-  z-index: 9996;
+  z-index: 9994;
   transition: all 0.5s;
   transition: background 0.5s;
 `
