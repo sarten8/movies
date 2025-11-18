@@ -1,5 +1,9 @@
 import { createGlobalStyle } from 'styled-components'
+import { SWRConfig } from 'swr'
 import Header from '../components/Header'
+
+// Fetcher global para SWR
+const fetcher = url => fetch(url).then(res => res.json())
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -48,10 +52,17 @@ const GlobalStyle = createGlobalStyle`
 
 export default function App({ Component, pageProps }) {
   return (
-    <>
+    <SWRConfig
+      value={{
+        fetcher,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        dedupingInterval: 60000, // 1 minuto
+      }}
+    >
       <GlobalStyle />
       <Header />
       <Component {...pageProps} />
-    </>
+    </SWRConfig>
   )
 }

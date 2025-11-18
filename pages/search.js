@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import styled from 'styled-components'
+import useSWRInfinite from 'swr/infinite'
 import Loading from '../components/Loading'
 import MoviesGrid from '../components/MoviesGrid'
 
@@ -119,55 +120,36 @@ export default function Search() {
   const { query: searchQuery } = router.query
 
   const [searchInput, setSearchInput] = useState('')
-  const [movies, setMovies] = useState([])
-  const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(0)
-  const [totalResults, setTotalResults] = useState(0)
-  const [loading, setLoading] = useState(false)
-  const [initialLoading, setInitialLoading] = useState(true)
-  const [error, setError] = useState(null)
-
   const observerRef = useRef(null)
   const loadMoreRef = useRef(null)
 
-  // Fetch movies function
-  const fetchMovies = useCallback(async (query, pageNum, append = false) => {
-    if (!query) return
+  // Función para generar la key de cada página
+  const getKey = (pageIndex, previousPageData) => {
+    if (!searchQuery) return null
+    if (previousPageData && !previousPageData.results?.length) return null
+    return `/api/search?query=${encodeURIComponent(searchQuery)}&page=${pageIndex + 1}`
+  }
 
-    try {
-      setLoading(true)
-      const response = await fetch(`/api/search?query=${encodeURIComponent(query)}&page=${pageNum}`)
-      const data = await response.json()
+  const {
+    data,
+    error,
+    size,
+    setSize,
+    isLoading,
+    isValidating,
+  } = useSWRInfinite(getKey, {
+    revalidateOnFocus: false,
+    revalidateFirstPage: false,
+    persistSize: true,
+    dedupingInterval: 300000, // 5 minutos de caché
+  })
 
-      if (append) {
-        setMovies(prev => [...prev, ...data.results])
-      } else {
-        setMovies(data.results || [])
-      }
-
-      setTotalPages(Math.min(data.total_pages || 0, 500))
-      setTotalResults(data.total_results || 0)
-      setError(null)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-      setInitialLoading(false)
-    }
-  }, [])
-
-  // Initial load when query changes
-  useEffect(() => {
-    if (searchQuery) {
-      setMovies([])
-      setPage(1)
-      setInitialLoading(true)
-      fetchMovies(searchQuery, 1, false)
-    } else {
-      setMovies([])
-      setInitialLoading(false)
-    }
-  }, [searchQuery, fetchMovies])
+  // Combinar todas las películas de todas las páginas
+  const movies = data ? data.flatMap(page => page.results || []) : []
+  const totalPages = data?.[0]?.total_pages ? Math.min(data[0].total_pages, 500) : 0
+  const totalResults = data?.[0]?.total_results || 0
+  const isLoadingMore = isValidating && size > 1
+  const hasMore = size < totalPages
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -178,10 +160,8 @@ export default function Search() {
     observerRef.current = new IntersectionObserver(
       (entries) => {
         const first = entries[0]
-        if (first.isIntersecting && !loading && page < totalPages) {
-          const nextPage = page + 1
-          setPage(nextPage)
-          fetchMovies(searchQuery, nextPage, true)
+        if (first.isIntersecting && !isValidating && hasMore) {
+          setSize(size + 1)
         }
       },
       { threshold: 0.1 }
@@ -196,7 +176,7 @@ export default function Search() {
         observerRef.current.disconnect()
       }
     }
-  }, [loading, page, totalPages, searchQuery, fetchMovies])
+  }, [isValidating, hasMore, size, setSize])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -226,7 +206,7 @@ export default function Search() {
 
         {error ? (
           <h3 style={{ marginTop: '50px', color: '#FFF' }}>Error loading results</h3>
-        ) : initialLoading ? (
+        ) : isLoading ? (
           <Loading />
         ) : movies.length > 0 ? (
           <>
@@ -240,13 +220,13 @@ export default function Search() {
               <MoviesGrid movies={movies} />
             </MoviesWrapper>
 
-            {page < totalPages && (
+            {hasMore && (
               <LoadingMore ref={loadMoreRef}>
-                {loading && <Loading />}
+                {isLoadingMore && <Loading />}
               </LoadingMore>
             )}
 
-            {page >= totalPages && movies.length > 0 && (
+            {!hasMore && movies.length > 0 && (
               <EndMessage>no more results</EndMessage>
             )}
           </>

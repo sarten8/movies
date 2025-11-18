@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react'
 import Person from './Person'
 import styled from 'styled-components'
-import axios from 'axios'
+import useSWR from 'swr'
 
 const Container = styled.div`
   margin-top: 40px;
@@ -14,29 +13,15 @@ const Container = styled.div`
 `
 
 export default function Cast({ movieId }) {
-  const [cast, setCast] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-
-  useEffect(() => {
-    const fetchCast = async () => {
-      try {
-        setLoading(true)
-        const response = await axios.get(`/api/movies/${movieId}/cast`)
-        setCast(response.data)
-      } catch (err) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
+  const { data: cast, error, isLoading } = useSWR(
+    movieId ? `/api/movies/${movieId}/cast` : null,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 300000, // 5 minutos de caché
     }
+  )
 
-    if (movieId) {
-      fetchCast()
-    }
-  }, [movieId])
-
-  if (loading) return null
+  if (isLoading) return null
   if (error) return null
   if (!cast || !cast.cast) return null
 
