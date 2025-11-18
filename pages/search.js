@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import styled from 'styled-components'
 import Loading from '../components/Loading'
-import MovieCard from '../components/MovieCard'
+import MoviesGrid from '../components/MoviesGrid'
 
 const SearchContainer = styled.div`
   position: relative;
@@ -40,14 +40,14 @@ const SearchTextContainer = styled.div`
 
 const SearchText = styled.input`
   width: 100%;
-  padding: 15px 0;
+  padding: 18px 0;
   background: transparent;
   color: white;
   font-family: 'Raleway', sans-serif;
-  font-size: 18px;
-  font-weight: 300;
+  font-size: 20px;
+  font-weight: 400;
   border: none;
-  border-bottom: 1px solid #333;
+  border-bottom: 2px solid #444;
   transition: all 0.3s ease;
   outline: none;
   text-align: center;
@@ -58,10 +58,10 @@ const SearchText = styled.input`
   }
 
   &::placeholder {
-    color: #888;
-    font-size: 18px;
+    color: #999;
+    font-size: 20px;
     font-weight: 400;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
   }
 `
 
@@ -91,14 +91,9 @@ const QueryText = styled.h1`
   letter-spacing: 2px;
 `
 
-const MoviesContent = styled.div`
-  margin: 0;
-  padding: 20px;
-  max-width: 100%;
-  height: auto;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
+const MoviesWrapper = styled.div`
+  width: 100%;
+  max-width: 1400px;
 `
 
 const LoadingMore = styled.div`
@@ -241,11 +236,9 @@ export default function Search() {
                 {totalResults} result{totalResults !== 1 ? 's' : ''}
               </TotalResults>
             </ResultTitle>
-            <MoviesContent>
-              {movies.map((movie, index) => (
-                <MovieCard key={`${movie.id}-${index}`} movie={movie} />
-              ))}
-            </MoviesContent>
+            <MoviesWrapper>
+              <MoviesGrid movies={movies} />
+            </MoviesWrapper>
 
             {page < totalPages && (
               <LoadingMore ref={loadMoreRef}>

@@ -37,14 +37,14 @@ const SearchTextContainer = styled.div`
 
 const SearchText = styled.input`
   width: 100%;
-  padding: 15px 0;
+  padding: 18px 0;
   background: transparent;
   color: white;
   font-family: 'Raleway', sans-serif;
-  font-size: 18px;
-  font-weight: 300;
+  font-size: 20px;
+  font-weight: 400;
   border: none;
-  border-bottom: 1px solid #333;
+  border-bottom: 2px solid #444;
   transition: all 0.3s ease;
   outline: none;
   text-align: center;
@@ -55,10 +55,10 @@ const SearchText = styled.input`
   }
 
   &::placeholder {
-    color: #555;
-    font-size: 16px;
-    font-weight: 300;
-    letter-spacing: 2px;
+    color: #999;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 3px;
   }
 `
 
