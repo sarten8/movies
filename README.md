@@ -1,68 +1,143 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Movies App - Next.js
 
-## Available Scripts
+A modern movie discovery application built with Next.js 15, featuring Server-Side Rendering (SSR), optimized images, and secure API key handling.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+- **Server-Side Rendering (SSR)**: All pages use `getServerSideProps` for optimal SEO and performance
+- **Backend API Routes**: All TMDb API calls are made from Next.js backend routes, keeping API keys secure
+- **Optimized Images**: Using Next.js `Image` component for automatic image optimization
+- **Trending Movies**: Browse weekly trending movies
+- **Movie Search**: Search for any movie in the TMDb database
+- **Movie Details**: View detailed information including cast, ratings, and more
+- **Responsive Design**: Fully responsive with styled-components
+- **Fast Performance**: Optimized fonts, images, and code splitting
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Tech Stack
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+- **Next.js 15** - React framework with SSR
+- **React 18** - UI library
+- **Styled Components** - CSS-in-JS styling
+- **Axios** - HTTP client
+- **The Movie Database (TMDb) API** - Movie data source
 
-### `npm test`
+## Getting Started
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Prerequisites
 
-### `npm run build`
+- Node.js 18+ installed
+- A TMDb API key (get one at [https://www.themoviedb.org/settings/api](https://www.themoviedb.org/settings/api))
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Installation
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd movies
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. Install dependencies:
+```bash
+npm install
+```
 
-### `npm run eject`
+3. Create a `.env.local` file in the root directory and add your TMDb API token:
+```env
+TMDB_API_TOKEN=your_tmdb_bearer_token_here
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+**Important**: The API token is stored in `.env.local` which is gitignored. This ensures your API key is never exposed to the client or committed to version control.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+4. Run the development server:
+```bash
+npm run dev
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Build for Production
 
-## Learn More
+```bash
+npm run build
+npm start
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Project Structure
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+movies/
+├── components/          # Reusable React components
+│   ├── Header.jsx
+│   ├── Loading.jsx
+│   ├── MovieCard.jsx
+│   ├── Pagination.jsx
+│   └── ...
+├── pages/
+│   ├── api/            # Backend API routes (secure)
+│   │   ├── movies/
+│   │   │   ├── trending.js
+│   │   │   ├── [id].js
+│   │   │   └── [id]/cast.js
+│   │   └── search.js
+│   ├── movies/         # Movie pages with SSR
+│   │   ├── index.js    # Trending movies
+│   │   └── [id].js     # Movie details
+│   ├── _app.js         # App wrapper
+│   ├── _document.js    # Custom document
+│   ├── index.js        # Home page
+│   └── search.js       # Search results
+├── public/             # Static assets
+│   └── images/
+├── .env.local          # Environment variables (not in git)
+├── next.config.js      # Next.js configuration
+└── package.json
+```
 
-### Code Splitting
+## API Security
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+All API calls to TMDb are made from Next.js API routes (backend), not from the client:
 
-### Analyzing the Bundle Size
+- ✅ API token stored in `.env.local` (server-side only)
+- ✅ Never exposed to browser/client
+- ✅ API routes handle all external API calls
+- ✅ Client components call `/api/*` endpoints
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+## Optimizations Implemented
 
-### Making a Progressive Web App
+1. **Server-Side Rendering**: All pages fetch data on the server for better SEO and initial load time
+2. **Next.js Image Component**: Automatic image optimization, lazy loading, and responsive images
+3. **Google Fonts Optimization**: Fonts loaded through Next.js for better performance
+4. **Code Splitting**: Automatic code splitting by Next.js
+5. **API Route Caching**: Consider implementing caching for frequently accessed data
+6. **Styled Components**: CSS-in-JS with SSR support configured
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+## Differences from Original CRA Version
 
-### Advanced Configuration
+- **Removed Redux**: Simplified state management using SSR and React hooks
+- **Backend API Routes**: All TMDb API calls moved to Next.js backend
+- **SSR Instead of CSR**: Data fetched on server instead of client
+- **Next.js Router**: Replaced react-router-dom with Next.js routing
+- **Optimized Images**: Using Next.js Image instead of regular img tags
+- **Removed Zendesk Pagination**: Implemented custom, lightweight pagination
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+## Environment Variables
 
-### Deployment
+Create a `.env.local` file with:
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+```env
+# Required
+TMDB_API_TOKEN=your_tmdb_bearer_token_here
 
-### `npm run build` fails to minify
+# Optional (for SSR API calls)
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+For production deployment, set `NEXT_PUBLIC_BASE_URL` to your production URL.
+
+## License
+
+This project is for educational purposes.
+
+## Credits
+
+Movie data provided by [The Movie Database (TMDb)](https://www.themoviedb.org/)
