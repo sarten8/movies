@@ -35,6 +35,10 @@ const ImageContainer = styled.div`
   border-radius: 8px;
   overflow: hidden;
   transition: all 0.4s ease;
+
+  img {
+    transition: filter 0.4s ease;
+  }
 `
 
 const ScoreBadge = styled.div`
@@ -42,7 +46,7 @@ const ScoreBadge = styled.div`
   top: 10px;
   right: 10px;
   padding: 6px 10px;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.9);
   border-radius: 6px;
   border: 1px solid ${props => {
     const score = parseFloat(props.$score)
@@ -51,6 +55,7 @@ const ScoreBadge = styled.div`
     return '#f87171'
   }};
   z-index: 3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 `
 
 const ScoreText = styled.span`
@@ -76,10 +81,11 @@ const InfoContainer = styled.div`
 const Year = styled.span`
   font-family: 'Raleway', sans-serif;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   color: #fc2f70;
   letter-spacing: 1.5px;
   text-transform: uppercase;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 8px rgba(0, 0, 0, 0.6);
 `
 
 const Title = styled.h2`
@@ -87,7 +93,7 @@ const Title = styled.h2`
   padding: 0;
   width: 100%;
   font-family: 'Raleway', sans-serif;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 15px;
   letter-spacing: 0.3px;
   color: #ffffff;
@@ -97,6 +103,7 @@ const Title = styled.h2`
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 8px rgba(0, 0, 0, 0.6);
 `
 
 const Card = styled.div`
@@ -117,6 +124,10 @@ const Card = styled.div`
 
   &:hover ${ImageContainer} {
     transform: scale(1.08);
+  }
+
+  &:hover ${ImageContainer} img {
+    filter: grayscale(100%);
   }
 `
 
