@@ -20,7 +20,7 @@ const ModalContainer = styled.div`
 const Description = styled.div`
   margin: 10px;
   padding: 0;
-  max-width: 540px;
+  max-width: 600px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -30,31 +30,55 @@ const Description = styled.div`
   > div {
     word-wrap: break-word;
   }
+  @media screen and (min-width: 1200px) {
+    max-width: 700px;
+  }
 `
 
 const Modal = styled.div`
   position: relative;
   margin: 0 auto;
-  padding: 11px;
+  padding: 20px;
   border-radius: 10px;
   background-color: #050505d2;
   display: flex;
   flex-direction: row;
   justify-content: center;
+  align-items: flex-start;
   overflow: hidden;
   color: white;
+  max-width: 1200px;
   ${Description} div h2 {
-    font-size: 32px;
+    font-size: 38px;
     font-weight: bold;
     letter-spacing: 2px;
+    margin-bottom: 15px;
   }
   ${Description} div p {
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 300;
     letter-spacing: 1px;
+    line-height: 1.5;
   }
   @media screen and (max-width: 600px) {
     flex-direction: column;
+    padding: 15px;
+    align-items: center;
+    ${Description} div h2 {
+      font-size: 28px;
+    }
+    ${Description} div p {
+      font-size: 16px;
+    }
+  }
+  @media screen and (min-width: 1200px) {
+    padding: 30px;
+    ${Description} div h2 {
+      font-size: 44px;
+    }
+    ${Description} div p {
+      font-size: 22px;
+    }
   }
 `
 
@@ -115,12 +139,21 @@ const Cover = styled.div`
   height: auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   align-self: center;
   position: relative;
   min-width: 300px;
   min-height: 450px;
+  flex-shrink: 0;
+  @media screen and (max-width: 600px) {
+    min-width: 250px;
+    min-height: 375px;
+  }
+  @media screen and (min-width: 1200px) {
+    min-width: 400px;
+    min-height: 600px;
+  }
 `
 
 const Star = styled.span`
@@ -153,29 +186,44 @@ const Imdb = styled.div`
   position: relative;
   display: inline-block;
   margin-right: 10px;
-  width: 50px;
-  height: 24px;
+  width: 55px;
+  height: 26px;
   border-radius: 5px;
   overflow: hidden;
+  @media screen and (min-width: 1200px) {
+    width: 65px;
+    height: 30px;
+  }
 `
 
 const Point = styled.h3`
   display: inline-block;
   margin: 0;
+  font-size: 20px;
+  @media screen and (min-width: 1200px) {
+    font-size: 24px;
+  }
 `
 
 const Point2 = styled.span`
   display: inline-block;
   opacity: 0.4;
+  font-size: 18px;
+  @media screen and (min-width: 1200px) {
+    font-size: 22px;
+  }
 `
 
 const Year = styled.span`
   padding: 0;
   margin: 0;
   margin-left: 10px;
-  font-size: 12px;
+  font-size: 16px;
   letter-spacing: 1px;
   color: tomato;
+  @media screen and (min-width: 1200px) {
+    font-size: 18px;
+  }
 `
 
 export default function Movie({ data, error }) {
@@ -217,7 +265,7 @@ export default function Movie({ data, error }) {
                 src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
                 alt={data.title}
                 fill
-                sizes="(max-width: 600px) 100vw, 300px"
+                sizes="(max-width: 600px) 250px, (max-width: 1200px) 300px, 400px"
                 style={{ objectFit: 'contain', borderRadius: '5px' }}
                 priority
               />
@@ -245,7 +293,7 @@ export default function Movie({ data, error }) {
                 />
               </Imdb>
               <Star>&#x2605; </Star>
-              <Point>{data.vote_average}</Point>
+              <Point>{data.vote_average.toFixed(1)}</Point>
               <Point2>/10</Point2>
             </ImdbContainer>
           </Description>
