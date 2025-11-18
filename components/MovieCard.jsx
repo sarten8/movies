@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 const Overlay = styled.div`
   margin: 0;
-  padding: 15px;
+  padding: 12px;
   height: 100%;
   width: 100%;
   position: absolute;
@@ -14,17 +14,17 @@ const Overlay = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-start;
-  border-radius: 5px;
+  border-radius: 8px;
   background: linear-gradient(
     to top,
     rgba(0, 0, 0, 0.95) 0%,
-    rgba(0, 0, 0, 0.7) 40%,
-    rgba(0, 0, 0, 0.3) 70%,
+    rgba(0, 0, 0, 0.8) 35%,
+    rgba(0, 0, 0, 0.4) 60%,
     transparent 100%
   );
-  z-index: 9997;
-  opacity: 0;
-  transition: all 0.4s ease;
+  z-index: 2;
+  opacity: 1;
+  transition: all 0.3s ease;
 `
 
 const ImageContainer = styled.div`
@@ -32,73 +32,123 @@ const ImageContainer = styled.div`
   margin: 0;
   width: 100%;
   height: 100%;
-  border-radius: 5px;
+  border-radius: 8px;
   overflow: hidden;
   transition: all 0.4s ease;
+`
+
+const ScoreBadge = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 6px;
+  border: 1px solid ${props => {
+    const score = parseFloat(props.$score)
+    if (score >= 7) return '#4ade80'
+    if (score >= 5) return '#fbbf24'
+    return '#f87171'
+  }};
+  z-index: 3;
+`
+
+const ScoreText = styled.span`
+  font-family: 'Raleway', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: ${props => {
+    const score = parseFloat(props.$score)
+    if (score >= 7) return '#4ade80'
+    if (score >= 5) return '#fbbf24'
+    return '#f87171'
+  }};
+  letter-spacing: 0.5px;
+`
+
+const InfoContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 `
 
 const Year = styled.span`
   font-family: 'Raleway', sans-serif;
-  font-size: 11px;
-  font-weight: 300;
+  font-size: 12px;
+  font-weight: 600;
   color: #fc2f70;
-  letter-spacing: 2px;
-  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
 `
 
-const Title = styled.h1`
+const Title = styled.h2`
   margin: 0;
   padding: 0;
   width: 100%;
   font-family: 'Raleway', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: 0.5px;
-  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  color: #ffffff;
   line-height: 1.3;
-  margin-bottom: 8px;
-`
-
-const Popularity = styled.span`
-  font-family: 'Raleway', sans-serif;
-  font-size: 10px;
-  font-weight: 300;
-  color: #888;
-  letter-spacing: 1px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 const Card = styled.div`
-  margin: 15px;
   padding: 0;
   height: 300px;
-  width: 200px;
-  border-radius: 5px;
+  width: 100%;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.4s ease;
+  transition: all 0.3s ease;
   overflow: hidden;
   position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 
-  &:hover ${Overlay} {
-    opacity: 1;
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.5);
   }
 
   &:hover ${ImageContainer} {
-    filter: grayscale(100%);
-    transform: scale(1.05);
+    transform: scale(1.08);
   }
+`
+
+const PlaceholderImage = styled.div`
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  font-family: 'Raleway', sans-serif;
+  font-size: 12px;
+  text-align: center;
+  padding: 20px;
 `
 
 export default function MovieCard({ movie }) {
   const year = movie.release_date ? movie.release_date.substring(0, 4) : ''
-  const popularity = movie.vote_average ? movie.vote_average.toFixed(1) : '0.0'
+  const score = movie.vote_average ? movie.vote_average.toFixed(1) : '0.0'
 
   return (
     <Link href={`/movies/${movie.id}`}>
       <Card>
+        <ScoreBadge $score={score}>
+          <ScoreText $score={score}>{score}</ScoreText>
+        </ScoreBadge>
         <Overlay>
-          {year && <Year>{year}</Year>}
-          <Title>{movie.title}</Title>
-          <Popularity>{popularity} / 10</Popularity>
+          <InfoContainer>
+            {year && <Year>{year}</Year>}
+            <Title>{movie.title}</Title>
+          </InfoContainer>
         </Overlay>
         <ImageContainer>
           {movie.poster_path ? (
@@ -106,11 +156,11 @@ export default function MovieCard({ movie }) {
               src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
               alt={movie.title}
               fill
-              sizes="200px"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px"
               style={{ objectFit: 'cover' }}
             />
           ) : (
-            <div style={{ width: '100%', height: '100%', background: '#333' }} />
+            <PlaceholderImage>No image available</PlaceholderImage>
           )}
         </ImageContainer>
       </Card>
