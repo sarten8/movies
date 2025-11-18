@@ -43,7 +43,7 @@ const Contratapa = styled.div`
   top: 0;
   left: 0;
   display: none;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   border-radius: 5px;
@@ -82,20 +82,42 @@ const MoviesContainer = styled.div`
   align-items: center;
 `
 
-const Title = styled.h1`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
+const Year = styled.div`
   margin: 0;
   padding: 0;
-  width: 180px;
   font-family: 'Oswald', sans-serif;
   font-weight: 700;
-  font-size: 34px;
-  letter-spacing: -2px;
+  font-size: 28px;
   color: white;
+  text-align: center;
+`
+
+const Rating = styled.div`
+  margin: 0;
+  margin-top: 10px;
+  padding: 0;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  color: #ffaf7b;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+`
+
+const Star = styled.span`
+  font-size: 32px;
+  background: -webkit-linear-gradient(
+    to bottom,
+    #ffaf7b,
+    rgb(204, 215, 109),
+    rgb(97, 113, 28)
+  );
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
 `
 
 const MoviesContent = styled.div`
@@ -150,7 +172,11 @@ const Movies = ({ fetchMovies, history }) => {
             <Link key={index} to={`/movies/${movie.id}`}>
               <Card key={`mc${index}`}>
                 <Contratapa key={`mt${index}`}>
-                  <Title>{movie.title}</Title>
+                  <Year>{movie.release_date ? movie.release_date.substring(0, 4) : 'N/A'}</Year>
+                  <Rating>
+                    <Star>&#x2605;</Star>
+                    <span>{movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</span>
+                  </Rating>
                 </Contratapa>
                 <ImageBackground
                   key={`mi${index}`}

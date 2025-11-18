@@ -17,13 +17,14 @@ const ModalContainer = styled.div`
 `
 
 const Description = styled.div`
-  margin: 10px;
+  margin: 0;
   padding: 0;
-  max-width: 540px;
+  max-width: 600px;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  border-radius: 5px;
+  justify-content: flex-start;
+  gap: 25px;
   font-family: 'Advent Pro', sans-serif;
   word-wrap: break-word;
   > div {
@@ -34,113 +35,121 @@ const Description = styled.div`
 const Modal = styled.div`
   position: relative;
   margin: 0 auto;
-  padding: 11px;
-  border-radius: 10px;
-  background-color: #050505d2;
+  padding: 30px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: row;
   justify-content: center;
+  gap: 30px;
   overflow: hidden;
   color: white;
+  max-width: 1100px;
   ${Description} div h2 {
-    font-size: 32px;
-    font-weight: bold;
-    letter-spacing: 2px;
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 15px;
+    line-height: 1.2;
   }
   ${Description} div p {
     font-size: 16px;
     font-weight: 300;
-    letter-spacing: 1px;
+    letter-spacing: 0.3px;
+    line-height: 1.6;
+    color: #e0e0e0;
   }
   @media screen and (max-width: 600px) {
     flex-direction: column;
+    padding: 20px;
+    gap: 20px;
   }
 `
 
 const Close = styled.div`
   position: absolute;
-  right: 30px;
-  top: -10px;
-  width: 32px;
-  height: 32px;
+  right: 20px;
+  top: 20px;
+  width: 36px;
+  height: 36px;
   transition: all 0.3s;
   cursor: pointer;
   z-index: 10;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   :hover {
-    transform: rotateZ(90deg);
-    transition: all 0.6s;
+    transform: rotate(90deg);
+    background: rgba(255, 175, 123, 0.2);
+    transition: all 0.3s;
   }
   ::before {
     content: '';
     position: absolute;
-    top: 15px;
-    right: 0;
-    width: 25px;
-    border: 1px solid;
-    border-image-source: linear-gradient(
-      to bottom,
-      #ffaf7b,
-      rgb(204, 215, 109),
-      rgb(97, 113, 28)
-    );
-    border-image-slice: 1;
+    width: 20px;
+    border: 1.5px solid #ffaf7b;
     transform: rotate(45deg);
     transition: 0.3s;
   }
   ::after {
     content: '';
     position: absolute;
-    top: 15px;
-    right: 0;
-    width: 25px;
-    border: 1px solid;
-    border-image-source: linear-gradient(
-      to bottom,
-      #ffaf7b,
-      rgb(204, 215, 109),
-      rgb(97, 113, 28)
-    );
-    border-image-slice: 1;
+    width: 20px;
+    border: 1.5px solid #ffaf7b;
     transform: rotate(-45deg);
     transition: 0.3s;
   }
 `
 
 const Cover = styled.div`
-  margin: 10px;
+  margin: 0;
   padding: 0;
-  border-radius: 5px;
+  border-radius: 12px;
   width: auto;
   height: auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  align-self: center;
+  align-self: flex-start;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   > img {
     width: 100%;
+    max-width: 350px;
     height: auto;
-    max-height: 600px;
-    object-fit: scale-down;
-    border-radius: 5px;
+    max-height: 525px;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+  @media screen and (max-width: 600px) {
+    align-self: center;
   }
 `
 
+const RatingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 175, 123, 0.2);
+`
+
 const Star = styled.span`
+  font-size: 24px;
   margin-right: 5px;
-  background: #3a1c71;
-  background: -webkit-linear-gradient(
-    to bottom,
-    #ffaf7b,
-    rgb(204, 215, 109),
-    rgb(97, 113, 28)
-  ); /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(
     to bottom,
     #ffaf7b,
     rgb(204, 215, 109),
     rgb(97, 113, 28)
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  );
   -webkit-text-fill-color: transparent;
   background-clip: text;
   -webkit-background-clip: text;
@@ -148,27 +157,37 @@ const Star = styled.span`
 
 const Imdb = styled.img`
   display: inline;
-  margin-right: 10px;
   width: 50px;
   height: 24px;
-  border-radius: 5px;
+  border-radius: 4px;
+  opacity: 0.9;
 `
 
 const Point = styled.h3`
   display: inline-block;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffaf7b;
 `
 
 const Point2 = styled.span`
   display: inline-block;
-  opacity: 0.4;
+  opacity: 0.5;
+  font-size: 18px;
+  margin-left: 2px;
 `
 
 const Year = styled.span`
-  padding: 0;
-  margin: 0;
-  font-size: 12px;
-  letter-spacing: 1px;
-  color: tomato;
+  padding: 4px 12px;
+  margin-left: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #fff;
+  background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+  border-radius: 20px;
+  display: inline-block;
 `
 
 const Movie = ({ fetchMovie, history }) => {
@@ -203,17 +222,20 @@ const Movie = ({ fetchMovie, history }) => {
             <Description>
               <div>
                 <h2>
-                  {data.title} <Year>{data.release_date.substring(0, 4)}</Year>
+                  {data.title}
+                  <Year>{data.release_date.substring(0, 4)}</Year>
                 </h2>
                 <p>{data.overview}</p>
               </div>
-              <Cast movie={data.id} />
-              <div>
+              <RatingContainer>
                 <Imdb src={imdbImage} alt="" />
-                <Star>&#x2605; </Star>
-                <Point>{data.vote_average}</Point>
-                <Point2>/10</Point2>
-              </div>
+                <div>
+                  <Star>&#x2605;</Star>
+                  <Point>{data.vote_average}</Point>
+                  <Point2>/10</Point2>
+                </div>
+              </RatingContainer>
+              <Cast movie={data.id} />
             </Description>
           </Modal>
         </Fragment>
