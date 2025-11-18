@@ -2,9 +2,9 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Image from 'next/image'
 import styled from 'styled-components'
+import useSWR from 'swr'
 import Loading from '../../components/Loading'
 import Cast from '../../components/Cast'
-import { getMovieById } from '../../lib/tmdb'
 
 const ModalContainer = styled.div`
   margin: 0;
@@ -226,10 +226,19 @@ const Year = styled.span`
   }
 `
 
-export default function Movie({ data, error }) {
+export default function Movie() {
   const router = useRouter()
+  const { id } = router.query
 
-  if (router.isFallback || !data) {
+  const { data, error, isLoading } = useSWR(
+    id ? `/api/movies/${id}` : null,
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 300000, // 5 minutos de caché
+    }
+  )
+
+  if (isLoading || !data) {
     return (
       <ModalContainer>
         <Loading />
@@ -240,7 +249,7 @@ export default function Movie({ data, error }) {
   if (error) {
     return (
       <ModalContainer>
-        <h3 style={{ color: '#FFF' }}>Error: {error}</h3>
+        <h3 style={{ color: '#FFF' }}>Error: {error.message}</h3>
       </ModalContainer>
     )
   }
@@ -301,27 +310,4 @@ export default function Movie({ data, error }) {
       </ModalContainer>
     </>
   )
-}
-
-export async function getServerSideProps(context) {
-  const { id } = context.params
-
-  try {
-    const data = await getMovieById(id)
-
-    return {
-      props: {
-        data,
-        error: null,
-      },
-    }
-  } catch (error) {
-    console.error('Error fetching movie:', error.message)
-    return {
-      props: {
-        data: null,
-        error: error.message,
-      },
-    }
-  }
 }

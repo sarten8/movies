@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useRef, useEffect } from 'react'
 import Head from 'next/head'
 import styled from 'styled-components'
+import useSWRInfinite from 'swr/infinite'
 import Loading from '../../components/Loading'
 import MoviesGrid from '../../components/MoviesGrid'
 
@@ -69,44 +70,35 @@ const EndMessage = styled.p`
   letter-spacing: 1px;
 `
 
-export default function Movies() {
-  const [movies, setMovies] = useState([])
-  const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(0)
-  const [loading, setLoading] = useState(false)
-  const [initialLoading, setInitialLoading] = useState(true)
-  const [error, setError] = useState(null)
+// Función para generar la key de cada página
+const getKey = (pageIndex, previousPageData) => {
+  if (previousPageData && !previousPageData.results?.length) return null
+  return `/api/movies/trending?page=${pageIndex + 1}`
+}
 
+export default function Movies() {
   const observerRef = useRef(null)
   const loadMoreRef = useRef(null)
 
-  // Fetch trending movies
-  const fetchTrending = useCallback(async (pageNum, append = false) => {
-    try {
-      setLoading(true)
-      const response = await fetch(`/api/movies/trending?page=${pageNum}`)
-      const data = await response.json()
+  const {
+    data,
+    error,
+    size,
+    setSize,
+    isLoading,
+    isValidating,
+  } = useSWRInfinite(getKey, {
+    revalidateOnFocus: false,
+    revalidateFirstPage: false,
+    persistSize: true,
+    dedupingInterval: 300000, // 5 minutos de caché
+  })
 
-      if (append) {
-        setMovies(prev => [...prev, ...data.results])
-      } else {
-        setMovies(data.results || [])
-      }
-
-      setTotalPages(Math.min(data.total_pages || 0, 500))
-      setError(null)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-      setInitialLoading(false)
-    }
-  }, [])
-
-  // Initial load
-  useEffect(() => {
-    fetchTrending(1, false)
-  }, [fetchTrending])
+  // Combinar todas las películas de todas las páginas
+  const movies = data ? data.flatMap(page => page.results || []) : []
+  const totalPages = data?.[0]?.total_pages ? Math.min(data[0].total_pages, 500) : 0
+  const isLoadingMore = isValidating && size > 1
+  const hasMore = size < totalPages
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -117,10 +109,8 @@ export default function Movies() {
     observerRef.current = new IntersectionObserver(
       (entries) => {
         const first = entries[0]
-        if (first.isIntersecting && !loading && page < totalPages) {
-          const nextPage = page + 1
-          setPage(nextPage)
-          fetchTrending(nextPage, true)
+        if (first.isIntersecting && !isValidating && hasMore) {
+          setSize(size + 1)
         }
       },
       { threshold: 0.1 }
@@ -135,17 +125,17 @@ export default function Movies() {
         observerRef.current.disconnect()
       }
     }
-  }, [loading, page, totalPages, fetchTrending])
+  }, [isValidating, hasMore, size, setSize])
 
   if (error) {
     return (
       <MoviesContainer>
-        <h3 style={{ color: '#FFF', marginTop: '50px' }}>Error: {error}</h3>
+        <h3 style={{ color: '#FFF', marginTop: '50px' }}>Error: {error.message}</h3>
       </MoviesContainer>
     )
   }
 
-  if (initialLoading) {
+  if (isLoading) {
     return (
       <MoviesContainer>
         <Loading />
@@ -165,13 +155,13 @@ export default function Movies() {
           <MoviesGrid movies={movies} />
         </MoviesWrapper>
 
-        {page < totalPages && (
+        {hasMore && (
           <LoadingMore ref={loadMoreRef}>
-            {loading && <Loading />}
+            {isLoadingMore && <Loading />}
           </LoadingMore>
         )}
 
-        {page >= totalPages && movies.length > 0 && (
+        {!hasMore && movies.length > 0 && (
           <EndMessage>no more results</EndMessage>
         )}
       </MoviesContainer>

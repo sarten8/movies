@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import styled from 'styled-components'
+import { useSWRConfig } from 'swr'
 
 const Overlay = styled.div`
   margin: 0;
@@ -146,12 +147,35 @@ const PlaceholderImage = styled.div`
 `
 
 export default function MovieCard({ movie }) {
+  const { mutate } = useSWRConfig()
   const year = movie.release_date ? movie.release_date.substring(0, 4) : ''
   const score = movie.vote_average ? movie.vote_average.toFixed(1) : '0.0'
 
+  // Prefetch movie data on hover
+  const handleMouseEnter = () => {
+    const movieUrl = `/api/movies/${movie.id}`
+    const castUrl = `/api/movies/${movie.id}/cast`
+
+    // Prefetch movie details
+    fetch(movieUrl)
+      .then(res => res.json())
+      .then(data => {
+        mutate(movieUrl, data, false)
+      })
+      .catch(() => {})
+
+    // Prefetch cast
+    fetch(castUrl)
+      .then(res => res.json())
+      .then(data => {
+        mutate(castUrl, data, false)
+      })
+      .catch(() => {})
+  }
+
   return (
     <Link href={`/movies/${movie.id}`}>
-      <Card>
+      <Card onMouseEnter={handleMouseEnter}>
         <ScoreBadge $score={score}>
           <ScoreText $score={score}>{score}</ScoreText>
         </ScoreBadge>
