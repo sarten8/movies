@@ -8,17 +8,23 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
+  html {
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+  }
+
   html, body {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
+    max-width: 100%;
+    min-height: 100%;
     background: #050505;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    font-family: 'Raleway', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
       sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
   #__next {
@@ -26,13 +32,17 @@ const GlobalStyle = createGlobalStyle`
   }
 
   code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-      monospace;
+    font-family: 'Raleway', monospace, sans-serif;
   }
 
   a {
     color: inherit;
     text-decoration: none;
+  }
+
+  ::-webkit-scrollbar {
+    width: 0;
+    display: none;
   }
 `
 
