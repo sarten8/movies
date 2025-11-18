@@ -12,25 +12,28 @@ const Content = styled.div`
 
 const Container = styled.div`
   display: flex;
-  width: 60px;
-  height: 60px;
-  border: 1px solid #101010;
+  width: 90px;
+  height: 90px;
+  border: 2px solid #ffaf7b;
   border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 `
 const Image = styled.img`
   width: 100%;
   height: 100%;
-  background-size: cover;
-  background-position: center center;
+  object-fit: cover;
+  object-position: center;
   border-radius: 50%;
 `
 const P = styled.span`
   margin-top: 11px;
   display: block;
-  width: 75px;
+  width: 90px;
   text-align: center;
-  font-size: 10px;
-  line-height: 1;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 500;
 `
 
 export default ({ avatar, name }) => (
