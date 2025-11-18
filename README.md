@@ -1,6 +1,6 @@
 # Movies App - Next.js
 
-A modern movie discovery application built with Next.js 15, featuring Server-Side Rendering (SSR), optimized images, and secure API key handling.
+A modern movie discovery application built with Next.js 16, featuring Server-Side Rendering (SSR), optimized images, and secure API key handling.
 
 ## Features
 
@@ -15,8 +15,8 @@ A modern movie discovery application built with Next.js 15, featuring Server-Sid
 
 ## Tech Stack
 
-- **Next.js 15** - React framework with SSR
-- **React 18** - UI library
+- **Next.js 16** - React framework with SSR
+- **React 19** - UI library
 - **Styled Components** - CSS-in-JS styling
 - **Axios** - HTTP client
 - **The Movie Database (TMDb) API** - Movie data source
