@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import styled from 'styled-components'
 
@@ -69,22 +68,11 @@ const LinkSpan = styled.span`
 `
 
 export default function Menu({ menuStatus, menuActive }) {
-  const [open, setOpen] = useState(menuStatus || false)
-
-  const updateActive = () => {
-    setOpen(false)
+  const handleClick = () => {
     menuActive()
   }
 
-  const handleClick = () => {
-    updateActive()
-  }
-
-  useEffect(() => {
-    if (open !== menuStatus) setOpen(menuStatus)
-  }, [menuStatus, open])
-
-  return open ? (
+  return menuStatus ? (
     <MenuContainer>
       <div>
         <Link href="/" style={{ textDecoration: 'none' }}>

@@ -58,7 +58,7 @@ const SearchTextContainer = styled.div`
     right: -1px;
     bottom: -1px;
     background: linear-gradient(45deg, lightgray, gray, black);
-    filter: ${props => props.blur ? 'blur(30px)' : 'blur(0)'};
+    filter: ${props => props.$blur ? 'blur(30px)' : 'blur(0)'};
     border-radius: 50px;
     z-index: -1;
     transition: all 0.5s;
@@ -135,7 +135,7 @@ export default function Search({ data, error, searchQuery }) {
       </Head>
       <SearchContainer>
         <SearchForm onSubmit={handleSubmit}>
-          <SearchTextContainer blur={blur}>
+          <SearchTextContainer $blur={blur}>
             <SearchText
               type="text"
               value={searchInput}
