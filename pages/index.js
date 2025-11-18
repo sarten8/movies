@@ -55,7 +55,7 @@ const SearchTextContainer = styled.div`
     right: -1px;
     bottom: -1px;
     background: linear-gradient(45deg, lightgray, gray, black);
-    filter: ${props => props.blur ? 'blur(30px)' : 'blur(0)'};
+    filter: ${props => props.$blur ? 'blur(30px)' : 'blur(0)'};
     border-radius: 50px;
     z-index: -1;
     transition: all 0.5s;
@@ -93,8 +93,8 @@ const SearchWrapperTitle = styled.div`
 
 const SearchTitle = styled.h1`
   margin: 0;
-  margin-top: ${props => (props.bottom ? '-36px' : 0)};
-  margin-left: ${props => (props.bottom ? 0 : '4px')};
+  margin-top: ${props => (props.$bottom ? '-36px' : 0)};
+  margin-left: ${props => (props.$bottom ? 0 : '4px')};
   padding: 0;
   display: block;
   font-family: 'Raleway', monospace, sans-serif;
@@ -132,7 +132,7 @@ export default function Home() {
       </Head>
       <SearchContainer>
         <SearchForm onSubmit={handleSubmit}>
-          <SearchTextContainer blur={blur}>
+          <SearchTextContainer $blur={blur}>
             <SearchText
               type="text"
               autoFocus={true}
@@ -147,7 +147,7 @@ export default function Home() {
         </SearchForm>
         <SearchWrapperTitle>
           <SearchTitle>All</SearchTitle>
-          <SearchTitle bottom={true}>movies</SearchTitle>
+          <SearchTitle $bottom={true}>movies</SearchTitle>
         </SearchWrapperTitle>
       </SearchContainer>
     </>

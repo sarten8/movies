@@ -9,7 +9,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext .js,.jsx"
+    "lint": "eslint ."
   },
   "dependencies": {
     "axios": "^1.7.2",
@@ -21,10 +21,15 @@
     "styled-components": "^6.1.13"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.39.1",
+    "@next/eslint-plugin-next": "^16.0.3",
     "@types/node": "^22.9.0",
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
     "eslint": "^9.14.0",
-    "eslint-config-next": "^16.0.3"
+    "eslint-config-next": "^16.0.3",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1"
   }
 }

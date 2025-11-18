@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 const Span1 = styled.span`
@@ -73,21 +72,10 @@ const Icon = styled.div`
 `
 
 export default function MenuIcon({ menuStatus, menuActive }) {
-  const [active, setActive] = useState(false)
-
-  const updateActive = () => {
-    setActive(!active)
-    menuActive()
-  }
-
-  useEffect(() => {
-    if (active !== menuStatus) setActive(menuStatus)
-  }, [menuStatus, active])
-
   return (
-    <Icon onClick={updateActive}>
-      {active ? <Span1active /> : <Span1 />}
-      {active ? <Span2active /> : <Span2 />}
+    <Icon onClick={menuActive}>
+      {menuStatus ? <Span1active /> : <Span1 />}
+      {menuStatus ? <Span2active /> : <Span2 />}
     </Icon>
   )
 }
