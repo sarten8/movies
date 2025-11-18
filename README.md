@@ -111,14 +111,14 @@ All API calls to TMDb are made from Next.js API routes (backend), not from the c
 5. **API Route Caching**: Consider implementing caching for frequently accessed data
 6. **Styled Components**: CSS-in-JS with SSR support configured
 
-## Differences from Original CRA Version
+## Architecture Highlights
 
-- **Removed Redux**: Simplified state management using SSR and React hooks
-- **Backend API Routes**: All TMDb API calls moved to Next.js backend
-- **SSR Instead of CSR**: Data fetched on server instead of client
-- **Next.js Router**: Replaced react-router-dom with Next.js routing
-- **Optimized Images**: Using Next.js Image instead of regular img tags
-- **Removed Zendesk Pagination**: Implemented custom, lightweight pagination
+- **Server-Side Rendering (SSR)**: All data fetching happens on the server for optimal SEO and performance
+- **Secure API Routes**: All external API calls go through Next.js API routes
+- **Modern State Management**: Uses React hooks and SSR instead of client-side state libraries
+- **File-based Routing**: Leverages Next.js built-in routing system
+- **Optimized Images**: Next.js Image component for automatic optimization
+- **Custom Pagination**: Lightweight, efficient pagination component
 
 ## Environment Variables
 

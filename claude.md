@@ -8,6 +8,86 @@ A modern movie discovery application built with Next.js 16 and React 19, featuri
 
 ## Recent Updates
 
+### Vercel NOT_FOUND Error Research (2025-11-18)
+
+**Overview**: El error `NOT_FOUND` (404) en Vercel ocurre cuando un recurso solicitado no puede ser encontrado. Esto puede suceder si el recurso fue movido, eliminado, o hay un error en la URL.
+
+#### Causas Comunes del Error NOT_FOUND
+
+1. **Framework Preset Incorrecto**
+   - Vercel detecta automáticamente el framework, pero puede fallar
+   - Solución: Dashboard → Settings → Build & Development Settings → Framework Preset = Next.js
+
+2. **Output Directory Mal Configurado**
+   - Si el Output Directory está incorrecto, Vercel sirve archivos de una carpeta incorrecta/vacía
+   - Para Next.js, el output directory es `.next` (automático)
+   - NO sobrescribir a menos que sea absolutamente necesario
+
+3. **Root Directory Incorrecto**
+   - Si la app Next.js está en un subdirectorio, debe configurarse en Vercel
+   - Dashboard → Settings → General → Root Directory
+
+4. **Error routes-manifest.json**
+   - Este archivo se genera durante `next build`
+   - Causas: Build fallido, Output Directory incorrecto, problemas de caché
+   - Solución: Verificar que `next build` se ejecute correctamente
+
+5. **vercel.json Conflictivo**
+   - Configuraciones en vercel.json pueden interferir con Next.js
+   - A veces eliminar vercel.json y usar valores por defecto resuelve el problema
+
+6. **Versión de Next.js**
+   - Usar 'latest' en package.json puede causar problemas
+   - Mejor fijar a una versión específica (actualmente 16.0.3)
+
+#### Pasos de Troubleshooting
+
+1. Verificar que la URL del deployment sea correcta
+2. Confirmar que el deployment existe y no fue eliminado
+3. Revisar logs del deployment para identificar errores
+4. Verificar permisos de acceso
+5. Comprobar configuración en Dashboard de Vercel:
+   - Framework Preset: Next.js
+   - Node.js Version: 22.x
+   - Build Command: `next build`
+   - Output Directory: (vacío/default para Next.js)
+
+#### Configuración Actual del Proyecto
+
+**vercel.json**:
+```json
+{
+  "framework": "nextjs",
+  "buildCommand": "next build",
+  "build": {
+    "env": {
+      "NEXT_TELEMETRY_DISABLED": "1"
+    }
+  }
+}
+```
+
+**package.json scripts**:
+```json
+{
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "next lint"
+}
+```
+
+Esta configuración es correcta para Next.js 16. El proyecto NO debe tener ningún archivo de Create React App como:
+- `public/index.html`
+- carpeta `src/`
+- `react-scripts` en dependencies
+- `serviceWorker.js`
+- `reportWebVitals.js`
+
+**Estado actual**: El proyecto está completamente migrado a Next.js 16 sin rastros de CRA.
+
+---
+
 ### Node.js Version Configuration (2025-11-18)
 
 **Issue**: Vercel deployment failing with error:
@@ -38,9 +118,8 @@ Error: Found invalid Node.js Version: "12.x". Please set Node.js Version to 18.x
 - Improved responsive design
 - Optimized component rendering
 
-#### Initial Next.js 15 Migration
-- Migrated from Create React App to Next.js 15
-- Implemented Server-Side Rendering (SSR)
+#### Initial Next.js Setup
+- Built with Next.js for Server-Side Rendering (SSR)
 - Created backend API routes for secure API key handling
 - Added image optimization with Next.js Image component
 
