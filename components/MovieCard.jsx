@@ -2,31 +2,29 @@ import Link from 'next/link'
 import Image from 'next/image'
 import styled from 'styled-components'
 
-const Contratapa = styled.div`
+const Overlay = styled.div`
   margin: 0;
-  padding: 0;
+  padding: 15px;
   height: 100%;
   width: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  display: none;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
   border-radius: 5px;
-  background-image: linear-gradient(
-    to right top,
-    #050505,
-    #050505cc,
-    #3d2b3acc,
-    #844b5acc,
-    #c87462cc,
-    #f4af60cc,
-    #f9f871cc
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.7) 40%,
+    rgba(0, 0, 0, 0.3) 70%,
+    transparent 100%
   );
   z-index: 9997;
-  transition: all 0.5s;
+  opacity: 0;
+  transition: all 0.4s ease;
 `
 
 const ImageContainer = styled.div`
@@ -36,53 +34,72 @@ const ImageContainer = styled.div`
   height: 100%;
   border-radius: 5px;
   overflow: hidden;
-  transition: 0.6s;
+  transition: all 0.4s ease;
+`
+
+const Year = styled.span`
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: #fc2f70;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
 `
 
 const Title = styled.h1`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
   margin: 0;
   padding: 0;
-  width: 180px;
-  font-family: 'Oswald', sans-serif;
-  font-weight: 700;
-  font-size: 34px;
-  letter-spacing: -2px;
+  width: 100%;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.5px;
   color: white;
-  text-align: center;
+  line-height: 1.3;
+  margin-bottom: 8px;
+`
+
+const Popularity = styled.span`
+  font-family: 'Raleway', sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: #888;
+  letter-spacing: 1px;
 `
 
 const Card = styled.div`
-  margin: 25px;
+  margin: 15px;
   padding: 0;
   height: 300px;
   width: 200px;
   border-radius: 5px;
   cursor: pointer;
-  transition: all 0.5s;
+  transition: all 0.4s ease;
   overflow: hidden;
   position: relative;
-  &:hover ${Contratapa} {
-    display: flex;
-    transition: all 0.5s;
+
+  &:hover ${Overlay} {
+    opacity: 1;
   }
+
   &:hover ${ImageContainer} {
-    transform: scale(1.1);
-    transition: all 0.5s;
+    filter: grayscale(100%);
+    transform: scale(1.05);
   }
 `
 
 export default function MovieCard({ movie }) {
+  const year = movie.release_date ? movie.release_date.substring(0, 4) : ''
+  const popularity = movie.vote_average ? movie.vote_average.toFixed(1) : '0.0'
+
   return (
     <Link href={`/movies/${movie.id}`}>
       <Card>
-        <Contratapa>
+        <Overlay>
+          {year && <Year>{year}</Year>}
           <Title>{movie.title}</Title>
-        </Contratapa>
+          <Popularity>{popularity} / 10</Popularity>
+        </Overlay>
         <ImageContainer>
           {movie.poster_path ? (
             <Image

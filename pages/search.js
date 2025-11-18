@@ -1,111 +1,98 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import styled from 'styled-components'
-import SearchButton from '../components/SearchButton'
 import Loading from '../components/Loading'
 import MovieCard from '../components/MovieCard'
-import Pagination from '../components/Pagination'
-import { searchMovies } from '../lib/tmdb'
 
 const SearchContainer = styled.div`
   position: relative;
-  margin: 22px 0;
-  padding: 0 11px;
+  margin: 0;
+  padding: 0 20px;
+  padding-bottom: 50px;
   background: #050505;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  min-height: calc(100vh - 50px);
 `
 
 const SearchForm = styled.form`
-  position: sticky;
-  position: -webkit-sticky;
-  top: 35px;
-  margin-bottom: 20px;
+  margin: 40px 0;
   padding: 0;
-  width: calc(100% - 120px);
-  max-width: 570px;
-  background: #050505;
+  width: 100%;
+  max-width: 500px;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  border-radius: 50%;
-  z-index: 9996;
 `
 
 const SearchTextContainer = styled.div`
   position: relative;
-  padding: 10px;
-  padding-left: 20px;
-  padding-right: 65px;
   width: 100%;
-  height: 66px;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  background: #050505;
-  border-radius: 50px;
-  transition: all 0.5s;
-  ::before {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    background: linear-gradient(45deg, lightgray, gray, black);
-    filter: ${props => props.$blur ? 'blur(30px)' : 'blur(0)'};
-    border-radius: 50px;
-    z-index: -1;
-    transition: all 0.5s;
-  }
 `
 
 const SearchText = styled.input`
   width: 100%;
-  height: 100%;
+  padding: 15px 0;
   background: transparent;
   color: white;
-  font-family: 'Raleway', monospace, sans-serif;
-  font-size: 20px;
-  font-weight: 100;
-  border: 0;
-  transition: all 0.5s;
+  font-family: 'Raleway', sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  border: none;
+  border-bottom: 1px solid #333;
+  transition: all 0.3s ease;
   outline: none;
-  ::placeholder {
-    color: #ffffffaa;
-    font-size: 18px;
-    font-style: italic;
-    letter-spacing: 1px;
-    transition: all 0.5s;
+  text-align: center;
+  letter-spacing: 1px;
+
+  &:focus {
+    border-bottom-color: #fc2f70;
+  }
+
+  &::placeholder {
+    color: #555;
+    font-size: 16px;
+    font-weight: 300;
+    letter-spacing: 2px;
   }
 `
 
 const TotalResults = styled.span`
-  font-family: 'Raleway', monospace, sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  margin-left: 25px;
+  font-family: 'Raleway', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: #666;
+  letter-spacing: 1px;
 `
 
-const ResultTitle = styled.h1`
-  margin: 20px 0;
+const ResultTitle = styled.div`
+  margin: 0 0 30px 0;
   padding: 0;
-  font-size: 32px;
-  line-height: 1.5;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  gap: 8px;
+`
+
+const QueryText = styled.h1`
+  margin: 0;
+  font-family: 'Raleway', sans-serif;
+  font-size: 24px;
+  font-weight: 300;
   color: white;
+  letter-spacing: 2px;
 `
 
 const MoviesContent = styled.div`
   margin: 0;
-  margin-top: 20px;
   padding: 20px;
   max-width: 100%;
   height: auto;
@@ -114,15 +101,112 @@ const MoviesContent = styled.div`
   justify-content: center;
 `
 
-export default function Search({ data, error, searchQuery }) {
+const LoadingMore = styled.div`
+  width: 100%;
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const EndMessage = styled.p`
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #555;
+  text-align: center;
+  padding: 40px;
+  letter-spacing: 1px;
+`
+
+export default function Search() {
   const router = useRouter()
+  const { query: searchQuery } = router.query
+
   const [searchInput, setSearchInput] = useState('')
-  const [blur, setBlur] = useState(false)
+  const [movies, setMovies] = useState([])
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0)
+  const [totalResults, setTotalResults] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [initialLoading, setInitialLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  const observerRef = useRef(null)
+  const loadMoreRef = useRef(null)
+
+  // Fetch movies function
+  const fetchMovies = useCallback(async (query, pageNum, append = false) => {
+    if (!query) return
+
+    try {
+      setLoading(true)
+      const response = await fetch(`/api/search?query=${encodeURIComponent(query)}&page=${pageNum}`)
+      const data = await response.json()
+
+      if (append) {
+        setMovies(prev => [...prev, ...data.results])
+      } else {
+        setMovies(data.results || [])
+      }
+
+      setTotalPages(Math.min(data.total_pages || 0, 500))
+      setTotalResults(data.total_results || 0)
+      setError(null)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+      setInitialLoading(false)
+    }
+  }, [])
+
+  // Initial load when query changes
+  useEffect(() => {
+    if (searchQuery) {
+      setMovies([])
+      setPage(1)
+      setInitialLoading(true)
+      fetchMovies(searchQuery, 1, false)
+    } else {
+      setMovies([])
+      setInitialLoading(false)
+    }
+  }, [searchQuery, fetchMovies])
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (observerRef.current) {
+      observerRef.current.disconnect()
+    }
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0]
+        if (first.isIntersecting && !loading && page < totalPages) {
+          const nextPage = page + 1
+          setPage(nextPage)
+          fetchMovies(searchQuery, nextPage, true)
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    if (loadMoreRef.current) {
+      observerRef.current.observe(loadMoreRef.current)
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+      }
+    }
+  }, [loading, page, totalPages, searchQuery, fetchMovies])
 
   const handleSubmit = (e) => {
     e.preventDefault()
     if (searchInput.trim()) {
-      router.push(`/search?query=${encodeURIComponent(searchInput)}&page=1`)
+      router.push(`/search?query=${encodeURIComponent(searchInput)}`)
       setSearchInput('')
     }
   }
@@ -130,90 +214,53 @@ export default function Search({ data, error, searchQuery }) {
   return (
     <>
       <Head>
-        <title>{searchQuery ? `Search results for "${searchQuery}"` : 'Search Movies'}</title>
+        <title>{searchQuery ? `"${searchQuery}"` : 'Search Movies'}</title>
         <meta name="description" content={`Search results for ${searchQuery || 'movies'}`} />
       </Head>
       <SearchContainer>
         <SearchForm onSubmit={handleSubmit}>
-          <SearchTextContainer $blur={blur}>
+          <SearchTextContainer>
             <SearchText
               type="text"
               value={searchInput}
               onChange={e => setSearchInput(e.target.value)}
-              placeholder="Movie..."
-              onFocus={() => setBlur(true)}
-              onBlur={() => setBlur(false)}
+              placeholder="search movies..."
             />
-            <SearchButton />
           </SearchTextContainer>
         </SearchForm>
 
         {error ? (
           <h3 style={{ marginTop: '50px', color: '#FFF' }}>Error loading results</h3>
-        ) : !data ? (
+        ) : initialLoading ? (
           <Loading />
-        ) : data.results && data.results.length > 0 ? (
+        ) : movies.length > 0 ? (
           <>
             <ResultTitle>
-              Results
+              <QueryText>{searchQuery}</QueryText>
               <TotalResults>
-                {searchQuery} {' | '}
-                {data.total_results} movie{data.total_results > 1 ? 's' : ''}
+                {totalResults} result{totalResults !== 1 ? 's' : ''}
               </TotalResults>
             </ResultTitle>
-            <Pagination
-              totalPages={Math.min(data.total_pages, 500)}
-              currentPage={data.page}
-            />
             <MoviesContent>
-              {data.results.map((movie, index) => (
-                <MovieCard key={movie.id || index} movie={movie} />
+              {movies.map((movie, index) => (
+                <MovieCard key={`${movie.id}-${index}`} movie={movie} />
               ))}
             </MoviesContent>
-            <Pagination
-              totalPages={Math.min(data.total_pages, 500)}
-              currentPage={data.page}
-            />
+
+            {page < totalPages && (
+              <LoadingMore ref={loadMoreRef}>
+                {loading && <Loading />}
+              </LoadingMore>
+            )}
+
+            {page >= totalPages && movies.length > 0 && (
+              <EndMessage>no more results</EndMessage>
+            )}
           </>
-        ) : (
-          <h3 style={{ marginTop: '50px', color: '#FFF' }}>No results found</h3>
-        )}
+        ) : searchQuery ? (
+          <h3 style={{ marginTop: '50px', color: '#555', fontWeight: 300 }}>no results found</h3>
+        ) : null}
       </SearchContainer>
     </>
   )
-}
-
-export async function getServerSideProps(context) {
-  const { query, page = 1 } = context.query
-
-  if (!query) {
-    return {
-      props: {
-        data: null,
-        error: null,
-        searchQuery: '',
-      },
-    }
-  }
-
-  try {
-    const data = await searchMovies(query, page)
-
-    return {
-      props: {
-        data,
-        error: null,
-        searchQuery: query,
-      },
-    }
-  } catch (error) {
-    console.error('Error fetching search results:', error.message)
-    return {
-      props: {
-        data: null,
-        error: error.message,
-        searchQuery: query,
-      },
-    }
-  }
 }
