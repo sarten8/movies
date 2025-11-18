@@ -1,10 +1,9 @@
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
 import styled from 'styled-components'
 import Loading from '../../components/Loading'
-import Pagination from '../../components/Pagination'
-import { getTrendingMovies } from '../../lib/tmdb'
 
 const TrendingTitle = styled.h1`
   margin: 0;
@@ -71,13 +70,16 @@ const ImageContainer = styled.div`
 
 const MoviesContainer = styled.div`
   margin: 0;
-  width: 99%;
-  max-width: 99%;
+  padding: 0 20px;
+  padding-bottom: 50px;
+  width: 100%;
+  max-width: 100%;
   height: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  min-height: calc(100vh - 50px);
 `
 
 const Title = styled.h1`
@@ -128,7 +130,92 @@ const Card = styled.div`
   }
 `
 
-export default function Movies({ data, error }) {
+const LoadingMore = styled.div`
+  width: 100%;
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const EndMessage = styled.p`
+  font-family: 'Raleway', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #888;
+  text-align: center;
+  padding: 40px;
+  letter-spacing: 1px;
+`
+
+export default function Movies() {
+  const [movies, setMovies] = useState([])
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [initialLoading, setInitialLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  const observerRef = useRef(null)
+  const loadMoreRef = useRef(null)
+
+  // Fetch trending movies
+  const fetchTrending = useCallback(async (pageNum, append = false) => {
+    try {
+      setLoading(true)
+      const response = await fetch(`/api/movies/trending?page=${pageNum}`)
+      const data = await response.json()
+
+      if (append) {
+        setMovies(prev => [...prev, ...data.results])
+      } else {
+        setMovies(data.results || [])
+      }
+
+      setTotalPages(Math.min(data.total_pages || 0, 500))
+      setError(null)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+      setInitialLoading(false)
+    }
+  }, [])
+
+  // Initial load
+  useEffect(() => {
+    fetchTrending(1, false)
+  }, [fetchTrending])
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (observerRef.current) {
+      observerRef.current.disconnect()
+    }
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0]
+        if (first.isIntersecting && !loading && page < totalPages) {
+          const nextPage = page + 1
+          setPage(nextPage)
+          fetchTrending(nextPage, true)
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    if (loadMoreRef.current) {
+      observerRef.current.observe(loadMoreRef.current)
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+      }
+    }
+  }, [loading, page, totalPages, fetchTrending])
+
   if (error) {
     return (
       <MoviesContainer>
@@ -137,7 +224,7 @@ export default function Movies({ data, error }) {
     )
   }
 
-  if (!data) {
+  if (initialLoading) {
     return (
       <MoviesContainer>
         <Loading />
@@ -154,8 +241,8 @@ export default function Movies({ data, error }) {
       <MoviesContainer>
         <TrendingTitle>Trending week</TrendingTitle>
         <MoviesContent>
-          {data.results.map((movie, index) => (
-            <Link key={movie.id || index} href={`/movies/${movie.id}`}>
+          {movies.map((movie, index) => (
+            <Link key={`${movie.id}-${index}`} href={`/movies/${movie.id}`}>
               <Card>
                 <Contratapa>
                   <Title>{movie.title}</Title>
@@ -177,36 +264,17 @@ export default function Movies({ data, error }) {
             </Link>
           ))}
         </MoviesContent>
-        {data && (
-          <Pagination
-            totalPages={Math.min(data.total_pages, 500)}
-            currentPage={data.page}
-          />
+
+        {page < totalPages && (
+          <LoadingMore ref={loadMoreRef}>
+            {loading && <Loading />}
+          </LoadingMore>
+        )}
+
+        {page >= totalPages && movies.length > 0 && (
+          <EndMessage>no more results</EndMessage>
         )}
       </MoviesContainer>
     </>
   )
-}
-
-export async function getServerSideProps(context) {
-  const { page = 1 } = context.query
-
-  try {
-    const data = await getTrendingMovies(page)
-
-    return {
-      props: {
-        data,
-        error: null,
-      },
-    }
-  } catch (error) {
-    console.error('Error fetching trending movies:', error.message)
-    return {
-      props: {
-        data: null,
-        error: error.message,
-      },
-    }
-  }
 }
