@@ -1,10 +1,10 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
-import axios from 'axios'
 import styled from 'styled-components'
 import Loading from '../../components/Loading'
 import Pagination from '../../components/Pagination'
+import { getTrendingMovies } from '../../lib/tmdb'
 
 const TrendingTitle = styled.h1`
   margin: 0;
@@ -192,14 +192,11 @@ export async function getServerSideProps(context) {
   const { page = 1 } = context.query
 
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `http://localhost:3000`
-    const response = await axios.get(`${baseUrl}/api/movies/trending`, {
-      params: { page },
-    })
+    const data = await getTrendingMovies(page)
 
     return {
       props: {
-        data: response.data,
+        data,
         error: null,
       },
     }

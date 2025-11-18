@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { getMovieById } from '../../../lib/tmdb'
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -12,16 +12,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await axios({
-      method: 'GET',
-      url: `https://api.themoviedb.org/3/movie/${id}`,
-      headers: {
-        'content-type': 'application/json;charset=utf-8',
-        Authorization: `Bearer ${process.env.TMDB_API_TOKEN}`,
-      },
-    })
-
-    res.status(200).json(response.data)
+    const data = await getMovieById(id)
+    res.status(200).json(data)
   } catch (error) {
     console.error('Error fetching movie:', error.message)
     res.status(error.response?.status || 500).json({
