@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import axios from 'axios'
 import styled from 'styled-components'
 import SearchButton from '../components/SearchButton'
 import Loading from '../components/Loading'
 import MovieCard from '../components/MovieCard'
 import Pagination from '../components/Pagination'
+import { searchMovies } from '../lib/tmdb'
 
 const SearchContainer = styled.div`
   position: relative;
@@ -197,14 +197,11 @@ export async function getServerSideProps(context) {
   }
 
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `http://localhost:3000`
-    const response = await axios.get(`${baseUrl}/api/search`, {
-      params: { query, page },
-    })
+    const data = await searchMovies(query, page)
 
     return {
       props: {
-        data: response.data,
+        data,
         error: null,
         searchQuery: query,
       },

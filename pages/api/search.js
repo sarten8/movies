@@ -1,5 +1,4 @@
-import axios from 'axios'
-import qs from 'qs'
+import { searchMovies } from '../../lib/tmdb'
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -12,25 +11,9 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Search query is required' })
   }
 
-  const pageNum = parseInt(page, 10)
-  const validPage = pageNum < 1 || pageNum > 1000 ? 1 : pageNum
-
   try {
-    const response = await axios({
-      method: 'GET',
-      url: 'https://api.themoviedb.org/3/search/movie',
-      headers: {
-        'content-type': 'application/json;charset=utf-8',
-        Authorization: `Bearer ${process.env.TMDB_API_TOKEN}`,
-      },
-      params: {
-        query,
-        page: validPage,
-      },
-      paramsSerializer: params => qs.stringify(params),
-    })
-
-    res.status(200).json(response.data)
+    const data = await searchMovies(query, page)
+    res.status(200).json(data)
   } catch (error) {
     console.error('Error searching movies:', error.message)
     res.status(error.response?.status || 500).json({
