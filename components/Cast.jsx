@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import axios from 'axios'
 
 const Container = styled.div`
+  margin-top: 40px;
   margin-bottom: 22px;
   display: flex;
   flex-direction: row;

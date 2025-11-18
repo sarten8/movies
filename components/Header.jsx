@@ -1,8 +1,5 @@
-import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
-import MenuIcon from './MenuIcon'
-import Menu from './Menu'
+import { useRouter } from 'next/router'
 import styled from 'styled-components'
 
 const HeaderContainer = styled.div`
@@ -10,54 +7,66 @@ const HeaderContainer = styled.div`
   position: -webkit-sticky;
   top: 0;
   left: 0;
-  padding: 22px;
+  padding: 12px 22px;
   max-width: 100%;
-  height: 56px;
+  height: auto;
   background: #050505;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  gap: 30px;
   z-index: 9995;
 `
 
-const LogoWrapper = styled.div`
-  position: relative;
-  width: 46px;
-  height: 46px;
-  transition: all 10s;
+const NavLink = styled.span`
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: ${props => props.$active ? '#fff' : '#888'};
   cursor: pointer;
-  :hover {
-    opacity: 0.7;
-    transform: rotateZ(3600deg);
-    transition: all 10s;
+  transition: all 0.3s ease;
+  padding: 5px 0;
+  position: relative;
+
+  &:hover {
+    color: #fff;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: ${props => props.$active ? '100%' : '0'};
+    height: 1px;
+    background: #fc2f70;
+    transition: width 0.3s ease;
+  }
+
+  &:hover::after {
+    width: 100%;
   }
 `
 
 export default function Header() {
-  const [active, setActive] = useState(false)
-
-  const updateActive = () => {
-    setActive(!active)
-  }
+  const router = useRouter()
+  const currentPath = router.pathname
 
   return (
-    <>
-      <HeaderContainer>
-        <Link href="/">
-          <LogoWrapper onClick={() => setActive(false)}>
-            <Image
-              src="/images/logo.png"
-              alt="Logo"
-              width={46}
-              height={46}
-              priority
-            />
-          </LogoWrapper>
-        </Link>
-        <MenuIcon menuStatus={active} menuActive={updateActive} />
-      </HeaderContainer>
-      <Menu menuStatus={active} menuActive={updateActive} />
-    </>
+    <HeaderContainer>
+      <Link href="/" style={{ textDecoration: 'none' }}>
+        <NavLink $active={currentPath === '/' || currentPath === '/search'}>
+          home
+        </NavLink>
+      </Link>
+      <Link href="/movies" style={{ textDecoration: 'none' }}>
+        <NavLink $active={currentPath === '/movies' || currentPath.startsWith('/movies/')}>
+          trending
+        </NavLink>
+      </Link>
+    </HeaderContainer>
   )
 }
