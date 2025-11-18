@@ -12,9 +12,9 @@ const animation = keyframes`
 `
 
 const LoadingSpinner = styled.div`
-  width: 4em;
+  width: 5em;
   height: 5em;
-  border: 3px solid transparent;
+  border: 4px solid rgba(255, 255, 255, 0.1);
   border-top-color: #fc2f70;
   border-bottom-color: #fc2f70;
   border-radius: 50%;

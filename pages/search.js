@@ -58,9 +58,9 @@ const SearchText = styled.input`
   }
 
   &::placeholder {
-    color: #555;
-    font-size: 16px;
-    font-weight: 300;
+    color: #888;
+    font-size: 18px;
+    font-weight: 400;
     letter-spacing: 2px;
   }
 `
