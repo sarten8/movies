@@ -16,12 +16,13 @@ Error: Found invalid Node.js Version: "12.x". Please set Node.js Version to 18.x
 ```
 
 **Solution Implemented**:
-1. Added `engines` field to `package.json` specifying Node.js 18.x
+1. Added `engines` field to `package.json` specifying Node.js 22.x
 2. Created `vercel.json` configuration file for Vercel deployment settings
 3. Updated README.md with correct version numbers (Next.js 16, React 19)
+4. Configured Vercel project settings to use Node.js 22.x
 
 **Files Modified**:
-- `package.json` - Added engines field with Node.js 18.x requirement
+- `package.json` - Added engines field with Node.js 22.x requirement
 - `vercel.json` - New file with Vercel-specific configuration
 - `README.md` - Updated tech stack versions
 
@@ -83,7 +84,7 @@ All pages use `getServerSideProps` for:
 ## Deployment Configuration
 
 ### Vercel Settings
-- **Node.js Version**: 18.x (configured in package.json)
+- **Node.js Version**: 22.x (configured in package.json and Vercel settings)
 - **Framework**: Next.js (auto-detected)
 - **Build Command**: `npm run build`
 - **Install Command**: `npm install`
