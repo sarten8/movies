@@ -1,5 +1,7 @@
+'use client'
+
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import styled from 'styled-components'
 
 const HeaderContainer = styled.div`
@@ -52,18 +54,17 @@ const NavLink = styled.span`
 `
 
 export default function Header() {
-  const router = useRouter()
-  const currentPath = router.pathname
+  const pathname = usePathname()
 
   return (
     <HeaderContainer>
       <Link href="/" style={{ textDecoration: 'none' }}>
-        <NavLink $active={currentPath === '/' || currentPath === '/search'}>
+        <NavLink $active={pathname === '/' || pathname === '/search'}>
           home
         </NavLink>
       </Link>
       <Link href="/movies" style={{ textDecoration: 'none' }}>
-        <NavLink $active={currentPath === '/movies' || currentPath.startsWith('/movies/')}>
+        <NavLink $active={pathname === '/movies' || pathname.startsWith('/movies/')}>
           trending
         </NavLink>
       </Link>

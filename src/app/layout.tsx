@@ -1,36 +1,41 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import type { Metadata } from 'next'
+import StyledComponentsRegistry from '@/lib/registry'
+import Providers from '@/lib/providers'
+import Header from '../../components/Header'
+import './globals.css'
 
 export const metadata: Metadata = {
-  title: "Movies App",
-  description: "Movie discovery application",
-};
+  title: 'Movies - Search for your favorite films',
+  description: 'Descubre y explora películas populares',
+  icons: {
+    icon: '/triangle.png',
+  },
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
-      <body
-        style={{
-          fontFamily: `var(${geistSans.variable}), var(${geistMono.variable}), sans-serif`,
-        }}
-      >
-        {children}
+      <head>
+        <meta name="theme-color" content="#000000" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;400;900&family=Oswald:wght@700&family=Advent+Pro:wght@300&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body>
+        <StyledComponentsRegistry>
+          <Providers>
+            <Header />
+            {children}
+          </Providers>
+        </StyledComponentsRegistry>
       </body>
     </html>
-  );
+  )
 }

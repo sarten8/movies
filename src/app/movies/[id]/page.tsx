@@ -1,10 +1,11 @@
-import { useRouter } from 'next/router'
-import Head from 'next/head'
+'use client'
+
+import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
 import styled from 'styled-components'
 import useSWR from 'swr'
-import Loading from '../../components/Loading'
-import Cast from '../../components/Cast'
+import Loading from '../../../../components/Loading'
+import Cast from '../../../../components/Cast'
 
 const ModalContainer = styled.div`
   margin: 0;
@@ -226,11 +227,21 @@ const Year = styled.span`
   }
 `
 
+interface MovieData {
+  id: number
+  title: string
+  overview: string
+  poster_path: string | null
+  release_date: string
+  vote_average: number
+}
+
 export default function Movie() {
   const router = useRouter()
-  const { id } = router.query
+  const params = useParams()
+  const id = params.id as string
 
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading } = useSWR<MovieData>(
     id ? `/api/movies/${id}` : null,
     {
       revalidateOnFocus: false,
@@ -255,59 +266,53 @@ export default function Movie() {
   }
 
   return (
-    <>
-      <Head>
-        <title>{data.title} - Movie Details</title>
-        <meta name="description" content={data.overview} />
-      </Head>
-      <ModalContainer>
-        <Modal>
-          <Close
-            onClick={(e) => {
-              e.preventDefault()
-              router.back()
-            }}
-          />
-          <Cover>
-            {data.poster_path && (
+    <ModalContainer>
+      <Modal>
+        <Close
+          onClick={(e) => {
+            e.preventDefault()
+            router.back()
+          }}
+        />
+        <Cover>
+          {data.poster_path && (
+            <Image
+              src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
+              alt={data.title}
+              fill
+              sizes="(max-width: 600px) 250px, (max-width: 1200px) 300px, 400px"
+              style={{ objectFit: 'contain', borderRadius: '5px' }}
+              priority
+            />
+          )}
+        </Cover>
+        <Description>
+          <div>
+            <h2>
+              {data.title}
+              {data.release_date && (
+                <Year>{data.release_date.substring(0, 4)}</Year>
+              )}
+            </h2>
+            <p>{data.overview}</p>
+          </div>
+          <Cast movieId={data.id} />
+          <ImdbContainer>
+            <Imdb>
               <Image
-                src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
-                alt={data.title}
+                src="/images/IMDb.png"
+                alt="IMDb"
                 fill
-                sizes="(max-width: 600px) 250px, (max-width: 1200px) 300px, 400px"
-                style={{ objectFit: 'contain', borderRadius: '5px' }}
-                priority
+                sizes="50px"
+                style={{ objectFit: 'contain' }}
               />
-            )}
-          </Cover>
-          <Description>
-            <div>
-              <h2>
-                {data.title}
-                {data.release_date && (
-                  <Year>{data.release_date.substring(0, 4)}</Year>
-                )}
-              </h2>
-              <p>{data.overview}</p>
-            </div>
-            <Cast movieId={data.id} />
-            <ImdbContainer>
-              <Imdb>
-                <Image
-                  src="/images/IMDb.png"
-                  alt="IMDb"
-                  fill
-                  sizes="50px"
-                  style={{ objectFit: 'contain' }}
-                />
-              </Imdb>
-              <Star>&#x2605; </Star>
-              <Point>{data.vote_average.toFixed(1)}</Point>
-              <Point2>/10</Point2>
-            </ImdbContainer>
-          </Description>
-        </Modal>
-      </ModalContainer>
-    </>
+            </Imdb>
+            <Star>&#x2605; </Star>
+            <Point>{data.vote_average.toFixed(1)}</Point>
+            <Point2>/10</Point2>
+          </ImdbContainer>
+        </Description>
+      </Modal>
+    </ModalContainer>
   )
 }

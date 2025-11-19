@@ -1,10 +1,11 @@
+'use client'
+
 import { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/router'
-import Head from 'next/head'
+import { useRouter, useSearchParams } from 'next/navigation'
 import styled from 'styled-components'
 import useSWRInfinite from 'swr/infinite'
-import Loading from '../components/Loading'
-import MoviesGrid from '../components/MoviesGrid'
+import Loading from '../../../components/Loading'
+import MoviesGrid from '../../../components/MoviesGrid'
 
 const SearchContainer = styled.div`
   position: relative;
@@ -117,14 +118,15 @@ const EndMessage = styled.p`
 
 export default function Search() {
   const router = useRouter()
-  const { query: searchQuery } = router.query
+  const searchParams = useSearchParams()
+  const searchQuery = searchParams.get('query')
 
   const [searchInput, setSearchInput] = useState('')
-  const observerRef = useRef(null)
-  const loadMoreRef = useRef(null)
+  const observerRef = useRef<IntersectionObserver | null>(null)
+  const loadMoreRef = useRef<HTMLDivElement | null>(null)
 
   // Función para generar la key de cada página
-  const getKey = (pageIndex, previousPageData) => {
+  const getKey = (pageIndex: number, previousPageData: { results?: unknown[] } | null) => {
     if (!searchQuery) return null
     if (previousPageData && !previousPageData.results?.length) return null
     return `/api/search?query=${encodeURIComponent(searchQuery)}&page=${pageIndex + 1}`
@@ -178,7 +180,7 @@ export default function Search() {
     }
   }, [isValidating, hasMore, size, setSize])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchInput.trim()) {
       router.push(`/search?query=${encodeURIComponent(searchInput)}`)
@@ -187,53 +189,47 @@ export default function Search() {
   }
 
   return (
-    <>
-      <Head>
-        <title>{searchQuery ? `"${searchQuery}"` : 'Search Movies'}</title>
-        <meta name="description" content={`Search results for ${searchQuery || 'movies'}`} />
-      </Head>
-      <SearchContainer>
-        <SearchForm onSubmit={handleSubmit}>
-          <SearchTextContainer>
-            <SearchText
-              type="text"
-              value={searchInput}
-              onChange={e => setSearchInput(e.target.value)}
-              placeholder="search movies..."
-            />
-          </SearchTextContainer>
-        </SearchForm>
+    <SearchContainer>
+      <SearchForm onSubmit={handleSubmit}>
+        <SearchTextContainer>
+          <SearchText
+            type="text"
+            value={searchInput}
+            onChange={e => setSearchInput(e.target.value)}
+            placeholder="search movies..."
+          />
+        </SearchTextContainer>
+      </SearchForm>
 
-        {error ? (
-          <h3 style={{ marginTop: '50px', color: '#FFF' }}>Error loading results</h3>
-        ) : isLoading ? (
-          <Loading />
-        ) : movies.length > 0 ? (
-          <>
-            <ResultTitle>
-              <QueryText>{searchQuery}</QueryText>
-              <TotalResults>
-                {totalResults} result{totalResults !== 1 ? 's' : ''}
-              </TotalResults>
-            </ResultTitle>
-            <MoviesWrapper>
-              <MoviesGrid movies={movies} />
-            </MoviesWrapper>
+      {error ? (
+        <h3 style={{ marginTop: '50px', color: '#FFF' }}>Error loading results</h3>
+      ) : isLoading ? (
+        <Loading />
+      ) : movies.length > 0 ? (
+        <>
+          <ResultTitle>
+            <QueryText>{searchQuery}</QueryText>
+            <TotalResults>
+              {totalResults} result{totalResults !== 1 ? 's' : ''}
+            </TotalResults>
+          </ResultTitle>
+          <MoviesWrapper>
+            <MoviesGrid movies={movies} />
+          </MoviesWrapper>
 
-            {hasMore && (
-              <LoadingMore ref={loadMoreRef}>
-                {isLoadingMore && <Loading />}
-              </LoadingMore>
-            )}
+          {hasMore && (
+            <LoadingMore ref={loadMoreRef}>
+              {isLoadingMore && <Loading />}
+            </LoadingMore>
+          )}
 
-            {!hasMore && movies.length > 0 && (
-              <EndMessage>no more results</EndMessage>
-            )}
-          </>
-        ) : searchQuery ? (
-          <h3 style={{ marginTop: '50px', color: '#555', fontWeight: 300 }}>no results found</h3>
-        ) : null}
-      </SearchContainer>
-    </>
+          {!hasMore && movies.length > 0 && (
+            <EndMessage>no more results</EndMessage>
+          )}
+        </>
+      ) : searchQuery ? (
+        <h3 style={{ marginTop: '50px', color: '#555', fontWeight: 300 }}>no results found</h3>
+      ) : null}
+    </SearchContainer>
   )
 }

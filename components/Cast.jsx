@@ -1,3 +1,5 @@
+'use client'
+
 import Person from './Person'
 import styled from 'styled-components'
 import useSWR from 'swr'

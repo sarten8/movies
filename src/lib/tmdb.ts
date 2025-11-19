@@ -16,8 +16,8 @@ tmdbClient.interceptors.request.use((config) => {
   return config
 })
 
-export async function searchMovies(query, page = 1) {
-  const pageNum = parseInt(page, 10)
+export async function searchMovies(query: string, page: string | number = 1) {
+  const pageNum = typeof page === 'string' ? parseInt(page, 10) : page
   const validPage = pageNum < 1 || pageNum > 1000 ? 1 : pageNum
 
   const response = await tmdbClient.get('/search/movie', {
@@ -31,8 +31,8 @@ export async function searchMovies(query, page = 1) {
   return response.data
 }
 
-export async function getTrendingMovies(page = 1) {
-  const pageNum = parseInt(page, 10)
+export async function getTrendingMovies(page: string | number = 1) {
+  const pageNum = typeof page === 'string' ? parseInt(page, 10) : page
   const validPage = pageNum < 1 || pageNum > 1000 ? 1 : pageNum
 
   const response = await tmdbClient.get('/trending/movie/week', {
@@ -44,12 +44,12 @@ export async function getTrendingMovies(page = 1) {
   return response.data
 }
 
-export async function getMovieById(id) {
+export async function getMovieById(id: string | number) {
   const response = await tmdbClient.get(`/movie/${id}`)
   return response.data
 }
 
-export async function getMovieCast(id) {
+export async function getMovieCast(id: string | number) {
   const response = await tmdbClient.get(`/movie/${id}/credits`)
   return response.data
 }
