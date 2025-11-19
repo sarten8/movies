@@ -1,11 +1,39 @@
 'use client'
 
 import { useRouter, useParams } from 'next/navigation'
+import { useState } from 'react'
 import Image from 'next/image'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import useSWR from 'swr'
 import Cast from '../../../../components/Cast'
 import { MovieDetailSkeleton } from '../../../../components/Skeleton'
+
+const shimmer = keyframes`
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+`
+
+const ImageSkeleton = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #1a1a1a;
+  background-image: linear-gradient(
+    90deg,
+    #1a1a1a 0px,
+    #2a2a2a 40px,
+    #1a1a1a 80px
+  );
+  background-size: 200px 100%;
+  animation: ${shimmer} 1.5s ease-in-out infinite;
+  border-radius: 5px;
+`
 
 const ModalContainer = styled.div`
   margin: 0;
@@ -19,7 +47,8 @@ const ModalContainer = styled.div`
 `
 
 const Description = styled.div`
-  margin: 10px;
+  margin: 0;
+  margin-left: 20px;
   padding: 0;
   width: 50%;
   display: flex;
@@ -34,7 +63,7 @@ const Description = styled.div`
   @media screen and (max-width: 600px) {
     width: 100%;
     margin: 0;
-    padding: 0 15px;
+    padding: 0 15px 15px 15px;
   }
 `
 
@@ -47,7 +76,7 @@ const Modal = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: stretch;
   overflow: hidden;
   color: white;
   width: 100%;
@@ -66,7 +95,7 @@ const Modal = styled.div`
   }
   @media screen and (max-width: 600px) {
     flex-direction: column;
-    padding: 15px;
+    padding: 0;
     align-items: center;
     ${Description} div h2 {
       font-size: 28px;
@@ -140,29 +169,27 @@ const Close = styled.div`
 `
 
 const Cover = styled.div`
-  margin: 10px;
+  margin: 0;
   padding: 0;
   border-radius: 5px;
   width: 50%;
-  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  align-self: center;
   position: relative;
   min-height: 450px;
   flex-shrink: 0;
   @media screen and (max-width: 600px) {
-    width: calc(100% + 30px);
+    width: 100%;
     max-width: none;
-    min-height: 450px;
-    margin: 0 -15px;
+    min-height: 400px;
+    margin: 0;
     margin-bottom: 15px;
     border-radius: 0;
   }
   @media screen and (min-width: 1200px) {
-    min-height: 600px;
+    min-height: 550px;
   }
 `
 
@@ -249,6 +276,7 @@ export default function Movie() {
   const router = useRouter()
   const params = useParams()
   const id = params.id as string
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   const { data, error, isLoading } = useSWR<MovieData>(
     id ? `/api/movies/${id}` : null,
@@ -280,14 +308,21 @@ export default function Movie() {
           }}
         />
         <Cover>
+          {!imageLoaded && <ImageSkeleton />}
           {data.poster_path && (
             <Image
               src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
               alt={data.title}
               fill
-              sizes="(max-width: 600px) 250px, (max-width: 1200px) 300px, 400px"
-              style={{ objectFit: 'contain', borderRadius: '5px' }}
+              sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 600px"
+              style={{
+                objectFit: 'cover',
+                borderRadius: '5px',
+                opacity: imageLoaded ? 1 : 0,
+                transition: 'opacity 0.3s ease-in-out'
+              }}
               priority
+              onLoad={() => setImageLoaded(true)}
             />
           )}
         </Cover>
