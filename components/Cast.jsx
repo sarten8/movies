@@ -3,6 +3,7 @@
 import Person from './Person'
 import styled from 'styled-components'
 import useSWR from 'swr'
+import { CastSkeleton } from './Skeleton'
 
 const Container = styled.div`
   margin-top: 40px;
@@ -10,8 +11,12 @@ const Container = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
+
+  @media screen and (min-width: 600px) {
+    justify-content: flex-start;
+  }
 `
 
 export default function Cast({ movieId }) {
@@ -23,7 +28,7 @@ export default function Cast({ movieId }) {
     }
   )
 
-  if (isLoading) return null
+  if (isLoading) return <CastSkeleton count={6} />
   if (error) return null
   if (!cast || !cast.cast) return null
 
