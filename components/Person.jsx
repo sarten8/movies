@@ -37,14 +37,17 @@ const P = styled.span`
 `
 
 const Character = styled.span`
-  display: block;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
   width: 100%;
   text-align: center;
   font-size: 10px;
   line-height: 1.2;
   color: #888;
   margin-top: 2px;
-  word-break: break-word;
   @media screen and (min-width: 1200px) {
     font-size: 11px;
   }
