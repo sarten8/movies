@@ -54,9 +54,15 @@ const Character = styled.span`
 `
 
 export default function Person({ avatar, name, character }) {
+  const copyToClipboard = (text) => {
+    if (text && navigator.clipboard) {
+      navigator.clipboard.writeText(text)
+    }
+  }
+
   return (
     <Content>
-      <Container>
+      <Container onClick={() => copyToClipboard(name)}>
         {avatar ? (
           <Image
             src={`https://image.tmdb.org/t/p/w500/${avatar}`}
@@ -69,8 +75,8 @@ export default function Person({ avatar, name, character }) {
           <div style={{ width: '100%', background: '#333' }} />
         )}
       </Container>
-      <P>{name}</P>
-      {character && <Character>({character})</Character>}
+      <P onClick={() => copyToClipboard(name)}>{name}</P>
+      {character && <Character onClick={() => copyToClipboard(character)}>({character})</Character>}
     </Content>
   )
 }
