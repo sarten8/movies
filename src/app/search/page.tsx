@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import styled from 'styled-components'
 import useSWRInfinite from 'swr/infinite'
@@ -117,7 +117,7 @@ const EndMessage = styled.p`
   letter-spacing: 1px;
 `
 
-export default function Search() {
+function SearchContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const searchQuery = searchParams.get('query')
@@ -234,5 +234,17 @@ export default function Search() {
         <h3 style={{ marginTop: '50px', color: '#555', fontWeight: 300 }}>no results found</h3>
       ) : null}
     </SearchContainer>
+  )
+}
+
+export default function Search() {
+  return (
+    <Suspense fallback={
+      <SearchContainer>
+        <MoviesGridSkeleton count={10} />
+      </SearchContainer>
+    }>
+      <SearchContent />
+    </Suspense>
   )
 }
