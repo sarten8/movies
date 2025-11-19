@@ -39,7 +39,21 @@ const P = styled.span`
   }
 `
 
-export default function Person({ avatar, name }) {
+const Character = styled.span`
+  display: block;
+  width: 90px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #888;
+  margin-top: 4px;
+  @media screen and (min-width: 1200px) {
+    width: 110px;
+    font-size: 13px;
+  }
+`
+
+export default function Person({ avatar, name, character }) {
   return (
     <Content>
       <Container>
@@ -56,6 +70,7 @@ export default function Person({ avatar, name }) {
         )}
       </Container>
       <P>{name}</P>
+      {character && <Character>({character})</Character>}
     </Content>
   )
 }
