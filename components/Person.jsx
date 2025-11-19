@@ -31,11 +31,11 @@ const P = styled.span`
   display: block;
   width: 90px;
   text-align: center;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.2;
   @media screen and (min-width: 1200px) {
     width: 110px;
-    font-size: 14px;
+    font-size: 16px;
   }
 `
 
