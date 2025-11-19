@@ -2,11 +2,33 @@
 
 import Image from 'next/image'
 import styled from 'styled-components'
+import { useState } from 'react'
 
 const Content = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+`
+
+const Tooltip = styled.span`
+  position: absolute;
+  background: #333;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+  animation: fadeInOut 1.5s ease-in-out;
+
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(4px); }
+    15% { opacity: 1; transform: translateY(0); }
+    85% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-4px); }
+  }
 `
 
 const Container = styled.div`
@@ -31,6 +53,7 @@ const P = styled.span`
   font-size: 12px;
   line-height: 1.3;
   word-break: break-word;
+  cursor: text;
   @media screen and (min-width: 1200px) {
     font-size: 14px;
   }
@@ -48,15 +71,20 @@ const Character = styled.span`
   line-height: 1.2;
   color: #888;
   margin-top: 2px;
+  cursor: text;
   @media screen and (min-width: 1200px) {
     font-size: 11px;
   }
 `
 
 export default function Person({ avatar, name, character }) {
+  const [showTooltip, setShowTooltip] = useState(false)
+
   const copyToClipboard = (text) => {
     if (text && navigator.clipboard) {
       navigator.clipboard.writeText(text)
+      setShowTooltip(true)
+      setTimeout(() => setShowTooltip(false), 1500)
     }
   }
 
@@ -77,6 +105,7 @@ export default function Person({ avatar, name, character }) {
       </Container>
       <P onClick={() => copyToClipboard(name)}>{name}</P>
       {character && <Character onClick={() => copyToClipboard(character)}>({character})</Character>}
+      {showTooltip && <Tooltip>Copied!</Tooltip>}
     </Content>
   )
 }
