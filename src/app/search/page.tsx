@@ -206,7 +206,7 @@ function SearchContent() {
         <h3 style={{ marginTop: '50px', color: '#FFF' }}>Error loading results</h3>
       ) : isLoading ? (
         <MoviesWrapper>
-          <MoviesGridSkeleton count={10} />
+          <MoviesGridSkeleton count={20} />
         </MoviesWrapper>
       ) : movies.length > 0 ? (
         <>
@@ -241,7 +241,7 @@ export default function Search() {
   return (
     <Suspense fallback={
       <SearchContainer>
-        <MoviesGridSkeleton count={10} />
+        <MoviesGridSkeleton count={20} />
       </SearchContainer>
     }>
       <SearchContent />

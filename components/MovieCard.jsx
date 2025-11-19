@@ -1,9 +1,36 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { useSWRConfig } from 'swr'
+
+const shimmer = keyframes`
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+`
+
+const ImageSkeleton = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    #1a1a1a 0%,
+    #2a2a2a 50%,
+    #1a1a1a 100%
+  );
+  background-size: 200% 100%;
+  animation: ${shimmer} 1.5s ease-in-out infinite;
+  z-index: 1;
+`
 
 const Overlay = styled.div`
   margin: 0;
@@ -149,6 +176,7 @@ const PlaceholderImage = styled.div`
 `
 
 export default function MovieCard({ movie }) {
+  const [imageLoaded, setImageLoaded] = useState(false)
   const { mutate } = useSWRConfig()
   const year = movie.release_date ? movie.release_date.substring(0, 4) : ''
   const score = movie.vote_average ? movie.vote_average.toFixed(1) : '0.0'
@@ -189,13 +217,21 @@ export default function MovieCard({ movie }) {
         </Overlay>
         <ImageContainer>
           {movie.poster_path ? (
-            <Image
-              src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-              alt={movie.title}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px"
-              style={{ objectFit: 'cover' }}
-            />
+            <>
+              {!imageLoaded && <ImageSkeleton />}
+              <Image
+                src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                alt={movie.title}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px"
+                style={{
+                  objectFit: 'cover',
+                  opacity: imageLoaded ? 1 : 0,
+                  transition: 'opacity 0.3s ease-in-out'
+                }}
+                onLoad={() => setImageLoaded(true)}
+              />
+            </>
           ) : (
             <PlaceholderImage>No image available</PlaceholderImage>
           )}
