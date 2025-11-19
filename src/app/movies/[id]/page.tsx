@@ -4,8 +4,8 @@ import { useRouter, useParams } from 'next/navigation'
 import Image from 'next/image'
 import styled from 'styled-components'
 import useSWR from 'swr'
-import Loading from '../../../../components/Loading'
 import Cast from '../../../../components/Cast'
+import { MovieDetailSkeleton } from '../../../../components/Skeleton'
 
 const ModalContainer = styled.div`
   margin: 0;
@@ -21,15 +21,18 @@ const ModalContainer = styled.div`
 const Description = styled.div`
   margin: 10px;
   padding: 0;
-  max-width: 600px;
+  width: 50%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   border-radius: 5px;
-  font-family: 'Advent Pro', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   word-wrap: break-word;
   > div {
     word-wrap: break-word;
+  }
+  @media screen and (max-width: 600px) {
+    width: 100%;
   }
   @media screen and (min-width: 1200px) {
     max-width: 700px;
@@ -56,10 +59,10 @@ const Modal = styled.div`
     margin-bottom: 15px;
   }
   ${Description} div p {
-    font-size: 20px;
-    font-weight: 300;
-    letter-spacing: 1px;
-    line-height: 1.5;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    line-height: 1.7;
   }
   @media screen and (max-width: 600px) {
     flex-direction: column;
@@ -69,7 +72,9 @@ const Modal = styled.div`
       font-size: 28px;
     }
     ${Description} div p {
-      font-size: 16px;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.6;
     }
   }
   @media screen and (min-width: 1200px) {
@@ -78,7 +83,9 @@ const Modal = styled.div`
       font-size: 44px;
     }
     ${Description} div p {
-      font-size: 22px;
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 1.7;
     }
   }
 `
@@ -136,7 +143,7 @@ const Cover = styled.div`
   margin: 10px;
   padding: 0;
   border-radius: 5px;
-  width: auto;
+  width: 50%;
   height: auto;
   display: flex;
   flex-direction: column;
@@ -144,15 +151,16 @@ const Cover = styled.div`
   align-items: center;
   align-self: center;
   position: relative;
-  min-width: 300px;
   min-height: 450px;
   flex-shrink: 0;
   @media screen and (max-width: 600px) {
-    min-width: 250px;
-    min-height: 375px;
+    width: 100%;
+    max-width: 100%;
+    min-height: 450px;
+    margin: 0;
+    margin-bottom: 15px;
   }
   @media screen and (min-width: 1200px) {
-    min-width: 400px;
     min-height: 600px;
   }
 `
@@ -250,11 +258,7 @@ export default function Movie() {
   )
 
   if (isLoading || !data) {
-    return (
-      <ModalContainer>
-        <Loading />
-      </ModalContainer>
-    )
+    return <MovieDetailSkeleton />
   }
 
   if (error) {

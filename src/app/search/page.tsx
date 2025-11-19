@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import useSWRInfinite from 'swr/infinite'
 import Loading from '../../../components/Loading'
 import MoviesGrid from '../../../components/MoviesGrid'
+import { MoviesGridSkeleton } from '../../../components/Skeleton'
 
 const SearchContainer = styled.div`
   position: relative;
@@ -204,7 +205,9 @@ export default function Search() {
       {error ? (
         <h3 style={{ marginTop: '50px', color: '#FFF' }}>Error loading results</h3>
       ) : isLoading ? (
-        <Loading />
+        <MoviesWrapper>
+          <MoviesGridSkeleton count={10} />
+        </MoviesWrapper>
       ) : movies.length > 0 ? (
         <>
           <ResultTitle>

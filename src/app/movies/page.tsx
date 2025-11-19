@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import useSWRInfinite from 'swr/infinite'
 import Loading from '../../../components/Loading'
 import MoviesGrid from '../../../components/MoviesGrid'
+import { MoviesGridSkeleton } from '../../../components/Skeleton'
 
 const TrendingTitle = styled.h1`
   margin: 0;
@@ -138,7 +139,10 @@ export default function Movies() {
   if (isLoading) {
     return (
       <MoviesContainer>
-        <Loading />
+        <TrendingTitle>Trending week</TrendingTitle>
+        <MoviesWrapper>
+          <MoviesGridSkeleton count={10} />
+        </MoviesWrapper>
       </MoviesContainer>
     )
   }
