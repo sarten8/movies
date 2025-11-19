@@ -8,11 +8,18 @@ import { CastSkeleton } from './Skeleton'
 const Container = styled.div`
   margin-top: 40px;
   margin-bottom: 22px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 8px 4px;
+  align-items: start;
+  @media screen and (max-width: 600px) {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 12px 8px;
+  }
+  @media screen and (min-width: 1200px) {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 12px 8px;
+  }
 `
 
 export default function Cast({ movieId }) {

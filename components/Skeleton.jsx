@@ -105,11 +105,8 @@ export function MovieCardSkeleton() {
 
 // Cast Person Skeleton Component
 const PersonSkeletonContainer = styled.div`
-  margin-right: 8px;
-  margin-bottom: 15px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 `
 
@@ -117,7 +114,8 @@ export function PersonSkeleton() {
   return (
     <PersonSkeletonContainer>
       <AvatarSkeleton />
-      <TextSkeleton $width="70px" $height="12px" $mb="0" style={{ marginTop: '11px' }} />
+      <TextSkeleton $width="70%" $height="10px" $mb="0" style={{ marginTop: '8px' }} />
+      <TextSkeleton $width="50%" $height="8px" $mb="0" style={{ marginTop: '4px' }} />
     </PersonSkeletonContainer>
   )
 }
@@ -160,13 +158,17 @@ export function MoviesGridSkeleton({ count = 10 }) {
 const CastSkeletonContainer = styled.div`
   margin-top: 40px;
   margin-bottom: 22px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-
-  @media screen and (min-width: 600px) {
-    justify-content: flex-start;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 8px 4px;
+  align-items: start;
+  @media screen and (max-width: 600px) {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 12px 8px;
+  }
+  @media screen and (min-width: 1200px) {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 12px 8px;
   }
 `
 
