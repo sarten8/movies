@@ -4,11 +4,8 @@ import Image from 'next/image'
 import styled from 'styled-components'
 
 const Content = styled.div`
-  margin-right: 8px;
-  margin-bottom: 15px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 `
 
@@ -27,29 +24,29 @@ const Container = styled.div`
 `
 
 const P = styled.span`
-  margin-top: 11px;
+  margin-top: 8px;
   display: block;
-  width: 90px;
+  width: 100%;
   text-align: center;
-  font-size: 14px;
-  line-height: 1.2;
+  font-size: 12px;
+  line-height: 1.3;
+  word-break: break-word;
   @media screen and (min-width: 1200px) {
-    width: 110px;
-    font-size: 16px;
+    font-size: 14px;
   }
 `
 
 const Character = styled.span`
   display: block;
-  width: 90px;
+  width: 100%;
   text-align: center;
-  font-size: 12px;
+  font-size: 10px;
   line-height: 1.2;
   color: #888;
-  margin-top: 4px;
+  margin-top: 2px;
+  word-break: break-word;
   @media screen and (min-width: 1200px) {
-    width: 110px;
-    font-size: 13px;
+    font-size: 11px;
   }
 `
 
