@@ -141,7 +141,7 @@ export default function Movies() {
       <MoviesContainer>
         <TrendingTitle>Trending week</TrendingTitle>
         <MoviesWrapper>
-          <MoviesGridSkeleton count={10} />
+          <MoviesGridSkeleton count={20} />
         </MoviesWrapper>
       </MoviesContainer>
     )
