@@ -35,6 +35,7 @@ export default function Cast({ movieId }) {
           key={index}
           avatar={actor.profile_path}
           name={actor.name}
+          character={actor.character}
         />
       ))}
     </Container>
