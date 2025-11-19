@@ -1,9 +1,10 @@
+'use client'
+
 import { useRef, useEffect } from 'react'
-import Head from 'next/head'
 import styled from 'styled-components'
 import useSWRInfinite from 'swr/infinite'
-import Loading from '../../components/Loading'
-import MoviesGrid from '../../components/MoviesGrid'
+import Loading from '../../../components/Loading'
+import MoviesGrid from '../../../components/MoviesGrid'
 
 const TrendingTitle = styled.h1`
   margin: 0;
@@ -30,7 +31,6 @@ const TrendingTitle = styled.h1`
     font-size: 52px;
   }
 `
-
 
 const MoviesContainer = styled.div`
   margin: 0;
@@ -71,14 +71,14 @@ const EndMessage = styled.p`
 `
 
 // Función para generar la key de cada página
-const getKey = (pageIndex, previousPageData) => {
+const getKey = (pageIndex: number, previousPageData: { results?: unknown[] } | null) => {
   if (previousPageData && !previousPageData.results?.length) return null
   return `/api/movies/trending?page=${pageIndex + 1}`
 }
 
 export default function Movies() {
-  const observerRef = useRef(null)
-  const loadMoreRef = useRef(null)
+  const observerRef = useRef<IntersectionObserver | null>(null)
+  const loadMoreRef = useRef<HTMLDivElement | null>(null)
 
   const {
     data,
@@ -144,27 +144,21 @@ export default function Movies() {
   }
 
   return (
-    <>
-      <Head>
-        <title>Trending Movies This Week</title>
-        <meta name="description" content="Discover the most trending movies this week" />
-      </Head>
-      <MoviesContainer>
-        <TrendingTitle>Trending week</TrendingTitle>
-        <MoviesWrapper>
-          <MoviesGrid movies={movies} />
-        </MoviesWrapper>
+    <MoviesContainer>
+      <TrendingTitle>Trending week</TrendingTitle>
+      <MoviesWrapper>
+        <MoviesGrid movies={movies} />
+      </MoviesWrapper>
 
-        {hasMore && (
-          <LoadingMore ref={loadMoreRef}>
-            {isLoadingMore && <Loading />}
-          </LoadingMore>
-        )}
+      {hasMore && (
+        <LoadingMore ref={loadMoreRef}>
+          {isLoadingMore && <Loading />}
+        </LoadingMore>
+      )}
 
-        {!hasMore && movies.length > 0 && (
-          <EndMessage>no more results</EndMessage>
-        )}
-      </MoviesContainer>
-    </>
+      {!hasMore && movies.length > 0 && (
+        <EndMessage>no more results</EndMessage>
+      )}
+    </MoviesContainer>
   )
 }
