@@ -11,12 +11,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-
-  @media screen and (min-width: 600px) {
-    justify-content: flex-start;
-  }
 `
 
 export default function Cast({ movieId }) {

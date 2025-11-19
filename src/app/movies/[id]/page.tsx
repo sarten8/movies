@@ -33,9 +33,8 @@ const Description = styled.div`
   }
   @media screen and (max-width: 600px) {
     width: 100%;
-  }
-  @media screen and (min-width: 1200px) {
-    max-width: 700px;
+    margin: 0;
+    padding: 0 15px;
   }
 `
 
@@ -47,10 +46,11 @@ const Modal = styled.div`
   background-color: #050505d2;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: flex-start;
   overflow: hidden;
   color: white;
+  width: 100%;
   max-width: 1200px;
   ${Description} div h2 {
     font-size: 38px;
@@ -154,11 +154,12 @@ const Cover = styled.div`
   min-height: 450px;
   flex-shrink: 0;
   @media screen and (max-width: 600px) {
-    width: 100%;
-    max-width: 100%;
+    width: calc(100% + 30px);
+    max-width: none;
     min-height: 450px;
-    margin: 0;
+    margin: 0 -15px;
     margin-bottom: 15px;
+    border-radius: 0;
   }
   @media screen and (min-width: 1200px) {
     min-height: 600px;
