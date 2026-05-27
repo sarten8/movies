@@ -68,7 +68,7 @@ const Description = styled.div`
 `
 
 const Title = styled.h2`
-  cursor: pointer;
+  cursor: text;
   position: relative;
   display: inline-block;
 `
