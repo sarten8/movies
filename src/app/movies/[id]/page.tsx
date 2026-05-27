@@ -67,6 +67,56 @@ const Description = styled.div`
   }
 `
 
+const Title = styled.h2`
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+`
+
+const Tooltip = styled.span`
+  position: absolute;
+  top: -28px;
+  left: 0;
+  background: #333;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+  animation: fadeInOut 1.5s ease-in-out;
+
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(4px); }
+    15% { opacity: 1; transform: translateY(0); }
+    85% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-4px); }
+  }
+`
+
+const Genres = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+`
+
+const Genre = styled.span`
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: #ffaf7b;
+  border: 1px solid rgba(255, 175, 123, 0.4);
+  background: rgba(255, 175, 123, 0.08);
+  @media screen and (min-width: 1200px) {
+    font-size: 13px;
+    padding: 5px 12px;
+  }
+`
+
 const Modal = styled.div`
   position: relative;
   margin: 0 auto;
@@ -270,6 +320,7 @@ interface MovieData {
   poster_path: string | null
   release_date: string
   vote_average: number
+  genres: { id: number; name: string }[]
 }
 
 export default function Movie() {
@@ -277,6 +328,15 @@ export default function Movie() {
   const params = useParams()
   const id = params.id as string
   const [imageLoaded, setImageLoaded] = useState(false)
+  const [showTitleTooltip, setShowTitleTooltip] = useState(false)
+
+  const copyTitle = (text: string) => {
+    if (text && navigator.clipboard) {
+      navigator.clipboard.writeText(text)
+      setShowTitleTooltip(true)
+      setTimeout(() => setShowTitleTooltip(false), 1500)
+    }
+  }
 
   const { data, error, isLoading } = useSWR<MovieData>(
     id ? `/api/movies/${id}` : null,
@@ -328,12 +388,20 @@ export default function Movie() {
         </Cover>
         <Description>
           <div>
-            <h2>
+            <Title onClick={() => copyTitle(data.title)}>
               {data.title}
               {data.release_date && (
                 <Year>{data.release_date.substring(0, 4)}</Year>
               )}
-            </h2>
+              {showTitleTooltip && <Tooltip>Copied!</Tooltip>}
+            </Title>
+            {data.genres && data.genres.length > 0 && (
+              <Genres>
+                {data.genres.map((g) => (
+                  <Genre key={g.id}>{g.name}</Genre>
+                ))}
+              </Genres>
+            )}
             <p>{data.overview}</p>
           </div>
           <Cast movieId={data.id} />
