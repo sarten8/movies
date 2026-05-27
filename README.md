@@ -25,7 +25,7 @@ A modern movie discovery application built with Next.js 16, featuring Server-Sid
 
 ### Prerequisites
 
-- Node.js 22+ installed
+- Node.js 24+ installed (LTS recommended)
 - A TMDb API key (get one at [https://www.themoviedb.org/settings/api](https://www.themoviedb.org/settings/api))
 
 ### Installation

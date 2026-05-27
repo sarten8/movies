@@ -8,6 +8,25 @@ A modern movie discovery application built with Next.js 16 and React 19, featuri
 
 ## Recent Updates
 
+### Dependency & Node.js Engine Update (2026-05-27)
+
+**Goal**: Llevar dependencias al día y revisar el estado de vulnerabilidades reportadas por `npm audit`.
+
+**Cambios en `package.json`**:
+- `axios`: `^1.15.2` → `^1.16.1`
+- `react` / `react-dom`: `^19.2.1` → `^19.2.6`
+- `styled-components`: `^6.1.13` → `^6.4.2` (resuelve CVE transitiva de postcss vía styled-components)
+- `swr`: `^2.3.6` → `^2.4.1`
+- `engines.node`: `20.x` → `24.x` (Node 24 "Krypton" es Active LTS desde oct 2025 y default en Vercel)
+
+**Vulnerabilidades**:
+- Resueltas: `styled-components` (postcss XSS), `ajv` ReDoS y `brace-expansion` DoS (transitivas de devDeps, vía `npm audit fix`).
+- Pendiente: `postcss <8.5.10` empaquetada dentro de `next@16.2.6` (XSS GHSA-qx2v-qp2m-jg93, moderate). Se decidió **no** forzar override y esperar al próximo release estable de Next (fix presente en canary `16.3.0-canary.6+`). Riesgo real bajo para el caso de uso del proyecto.
+
+**Estado final**: 0 críticas, 0 altas, 2 moderate (ambas son la misma postcss bundle en Next).
+
+---
+
 ### Vercel NOT_FOUND Error Research (2025-11-18)
 
 **Overview**: El error `NOT_FOUND` (404) en Vercel ocurre cuando un recurso solicitado no puede ser encontrado. Esto puede suceder si el recurso fue movido, eliminado, o hay un error en la URL.
@@ -48,7 +67,7 @@ A modern movie discovery application built with Next.js 16 and React 19, featuri
 4. Verificar permisos de acceso
 5. Comprobar configuración en Dashboard de Vercel:
    - Framework Preset: Next.js
-   - Node.js Version: 22.x
+   - Node.js Version: 24.x (LTS, default actual de Vercel)
    - Build Command: `next build`
    - Output Directory: (vacío/default para Next.js)
 
@@ -126,19 +145,20 @@ Error: Found invalid Node.js Version: "12.x". Please set Node.js Version to 18.x
 ## Tech Stack
 
 ### Core Framework
-- **Next.js 16.0.3** - React framework with SSR capabilities
-- **React 19.2.0** - Latest UI library
-- **React DOM 19.2.0** - React rendering
+- **Next.js 16.2.6** - React framework with SSR capabilities
+- **React 19.2.6** - Latest UI library
+- **React DOM 19.2.6** - React rendering
 
 ### Styling & UI
-- **Styled Components 6.1.13** - CSS-in-JS with SSR support
+- **Styled Components 6.4.2** - CSS-in-JS with SSR support
 
 ### HTTP & Data
-- **Axios 1.7.2** - Promise-based HTTP client
-- **qs 6.13.0** - Query string parsing
+- **Axios 1.16.1** - Promise-based HTTP client
+- **qs 6.15.2** - Query string parsing
+- **SWR 2.4.1** - Data fetching/caching hooks
 
 ### Development Tools
-- **ESLint 9.14.0** - Code linting
+- **ESLint 9.x** - Code linting
 - **TypeScript Types** - Type definitions for better DX
 
 ## Architecture
@@ -163,7 +183,7 @@ All pages use `getServerSideProps` for:
 ## Deployment Configuration
 
 ### Vercel Settings
-- **Node.js Version**: 22.x (configured in package.json and Vercel settings)
+- **Node.js Version**: 24.x (configured in package.json `engines`; matches Vercel default — Node 24 is the current Active LTS since Oct 2025)
 - **Framework**: Next.js (auto-detected)
 - **Build Command**: `npm run build`
 - **Install Command**: `npm install`
@@ -227,4 +247,4 @@ Potential improvements:
 
 ---
 
-*Last Updated: 2025-11-18*
+*Last Updated: 2026-05-27*
