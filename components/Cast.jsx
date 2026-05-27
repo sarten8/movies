@@ -40,6 +40,7 @@ export default function Cast({ movieId }) {
       {cast.cast.slice(0, 12).map((actor, index) => (
         <Person
           key={index}
+          id={actor.id}
           avatar={actor.profile_path}
           name={actor.name}
           character={actor.character}

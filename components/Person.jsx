@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import styled from 'styled-components'
 import { useState } from 'react'
 
@@ -39,10 +40,20 @@ const Container = styled.div`
   border: 1px solid #101010;
   border-radius: 50%;
   overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  &:hover {
+    transform: scale(1.05);
+  }
   @media screen and (min-width: 1200px) {
     width: 100px;
     height: 100px;
   }
+`
+
+const AvatarLink = styled(Link)`
+  display: block;
+  line-height: 0;
 `
 
 const P = styled.span`
@@ -77,7 +88,7 @@ const Character = styled.span`
   }
 `
 
-export default function Person({ avatar, name, character }) {
+export default function Person({ id, avatar, name, character }) {
   const [showTooltip, setShowTooltip] = useState(false)
 
   const copyToClipboard = (text) => {
@@ -88,21 +99,29 @@ export default function Person({ avatar, name, character }) {
     }
   }
 
+  const avatarContent = (
+    <Container>
+      {avatar ? (
+        <Image
+          src={`https://image.tmdb.org/t/p/w500/${avatar}`}
+          alt={name || 'Actor'}
+          fill
+          sizes="(max-width: 1200px) 80px, 100px"
+          style={{ objectFit: 'cover' }}
+        />
+      ) : (
+        <div style={{ width: '100%', background: '#333' }} />
+      )}
+    </Container>
+  )
+
   return (
     <Content>
-      <Container onClick={() => copyToClipboard(name)}>
-        {avatar ? (
-          <Image
-            src={`https://image.tmdb.org/t/p/w500/${avatar}`}
-            alt={name || 'Actor'}
-            fill
-            sizes="(max-width: 1200px) 80px, 100px"
-            style={{ objectFit: 'cover' }}
-          />
-        ) : (
-          <div style={{ width: '100%', background: '#333' }} />
-        )}
-      </Container>
+      {id ? (
+        <AvatarLink href={`/person/${id}`}>{avatarContent}</AvatarLink>
+      ) : (
+        avatarContent
+      )}
       <P onClick={() => copyToClipboard(name)}>{name}</P>
       {character && <Character onClick={() => copyToClipboard(character)}>({character})</Character>}
       {showTooltip && <Tooltip>Copied!</Tooltip>}

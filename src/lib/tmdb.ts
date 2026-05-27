@@ -53,3 +53,13 @@ export async function getMovieCast(id: string | number) {
   const response = await tmdbClient.get(`/movie/${id}/credits`)
   return response.data
 }
+
+export async function getPerson(id: string | number) {
+  const response = await tmdbClient.get(`/person/${id}`)
+  return response.data
+}
+
+export async function getPersonMovieCredits(id: string | number) {
+  const response = await tmdbClient.get(`/person/${id}/movie_credits`)
+  return response.data
+}
