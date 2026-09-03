@@ -15,7 +15,7 @@
     "axios": "^1.16.1",
     "babel-plugin-react-compiler": "^1.0.0",
     "next": "^16.2.6",
-    "qs": "^6.15.2",
+    "qs": "^6.16.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "styled-components": "^6.4.2",
